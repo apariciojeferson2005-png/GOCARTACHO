@@ -32,8 +32,21 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final org.springframework.cache.CacheManager cacheManager;
 
+    @org.springframework.beans.factory.annotation.Value("${app.seeding.enabled:true}")
+    private boolean seedingEnabled;
+
     @Override
     public void run(String... args) throws Exception {
+        if (!seedingEnabled) {
+            log.info("Carga de datos de prueba (seeding) deshabilitada.");
+            // Aseguramos que existan los datos esenciales de configuración
+            inicializarAdminMaestro();
+            inicializarZonas();
+            inicializarTiposNegocio();
+            inicializarPlanes();
+            return;
+        }
+
         log.info("Iniciando carga de datos de prueba...");
 
         // 1. Usuarios (10)
@@ -81,6 +94,21 @@ public class DataLoader implements CommandLineRunner {
         }
 
         log.info("Carga de datos de prueba finalizada.");
+    }
+
+    private void inicializarAdminMaestro() {
+        String password = passwordEncoder.encode("password123");
+        if (usuarioRepository.findByUsername("admin").isEmpty()) {
+            log.info("Inicializando administrador maestro...");
+            Usuario admin = new Usuario();
+            admin.setNombre("Admin");
+            admin.setApellido("Master");
+            admin.setUsername("admin");
+            admin.setEmail("admin@gocartacho.com");
+            admin.setContrasena(password);
+            admin.setRol(RolUsuario.SUPER_ADMIN);
+            usuarioRepository.save(admin);
+        }
     }
 
     private void inicializarUsuarios() {
