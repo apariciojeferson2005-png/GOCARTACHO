@@ -1799,5 +1799,70 @@ input:checked + .slider:before { transform: translateX(22px); }
     }
 }
 
+/* ===================================================
+   MEJORAS RESPONSIVE (MOBILE) COMPLEMENTARIAS
+   =================================================== */
+@media (max-width: 768px) {
+    /* Filtros más amigables en móvil (que no se aplasten) */
+    .filter-row {
+        flex-wrap: wrap;
+    }
+    .filter-select, .filter-input {
+        flex: 1 1 100%;
+        margin-bottom: 5px;
+    }
 
-
+    /* Ajustar el pop-up del mapa Leaflet para no desbordar la pantalla en móvil */
+    .leaflet-popup-content {
+        width: 240px !important;
+    }
+    .popup-image-container {
+        height: 100px;
+    }
+    
+    /* Adaptación del portal de comerciante a columna en móviles */
+    .merchant-panel-layout {
+        flex-direction: column !important;
+        display: flex;
+        height: auto;
+    }
+    .merchant-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+    
+    /* Convierte el menú vertical del comerciante en scroll horizontal (estilo Apps) */
+    .merchant-sidebar-menu {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        gap: 10px;
+        scrollbar-width: none; /* Oculta scroll en Firefox */
+    }
+    .merchant-sidebar-menu::-webkit-scrollbar {
+        display: none; /* Oculta scroll en Chrome/Safari/Edge */
+    }
+    .merchant-sidebar-menu li {
+        display: inline-block;
+    }
+    .merchant-sidebar-menu li a {
+        padding: 8px 16px;
+        background: rgba(0,0,0,0.03);
+        border-radius: 20px;
+    }
+    
+    /* Reajuste del dashboard principal y las estadísticas a una columna */
+    .merchant-main-content, .stats-grid {
+        width: 100% !important;
+        padding: 15px !important;
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+

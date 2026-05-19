@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+}s
 
 body {
     font-family: var(--font-sans);
@@ -289,5 +289,9 @@ body::before {
 
     .register-card {
         padding: 40px 24px 30px;
+    }
+
+    .register-brand {
+        margin-bottom: 30px;
     }
 }

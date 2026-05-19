@@ -618,7 +618,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void corregirZonaIdsDeComercios() {
-        log.info("Iniciando auto-corrección de zonaId en comercios...");
+        log.info("Iniciando auto-corrección y validación geográfica de zonaId en comercios...");
         java.util.List<com.gocartacho.gocartacho.model.Zona> zonas = zonaRepository.findAll();
         if (zonas.isEmpty()) {
             log.warn("No hay zonas en la base de datos, abortando corrección.");
@@ -630,42 +630,44 @@ public class DataLoader implements CommandLineRunner {
 
         for (com.gocartacho.gocartacho.model.Comercio c : comercios) {
             String cZonaId = c.getZonaId();
-            boolean existeZona = cZonaId != null && zonas.stream().anyMatch(z -> z.getZonaId().equals(cZonaId));
-            if (!existeZona) {
-                com.gocartacho.gocartacho.model.Zona zonaMasCercana = null;
-                double minDistance = Double.MAX_VALUE;
-                
-                if (c.getLatitud() != null && c.getLongitud() != null) {
-                    double cLat = c.getLatitud().doubleValue();
-                    double cLng = c.getLongitud().doubleValue();
-                    
-                    for (com.gocartacho.gocartacho.model.Zona z : zonas) {
-                        if (z.getLatitud() != null && z.getLongitud() != null) {
-                            double zLat = z.getLatitud().doubleValue();
-                            double zLng = z.getLongitud().doubleValue();
-                            double dist = Math.pow(cLat - zLat, 2) + Math.pow(cLng - zLng, 2);
-                            if (dist < minDistance) {
-                                minDistance = dist;
-                                zonaMasCercana = z;
-                            }
+            com.gocartacho.gocartacho.model.Zona zonaMasCercana = null;
+            double minDistance = Double.MAX_VALUE;
+
+            if (c.getLatitud() != null && c.getLongitud() != null) {
+                double cLat = c.getLatitud().doubleValue();
+                double cLng = c.getLongitud().doubleValue();
+
+                for (com.gocartacho.gocartacho.model.Zona z : zonas) {
+                    if (z.getLatitud() != null && z.getLongitud() != null) {
+                        double zLat = z.getLatitud().doubleValue();
+                        double zLng = z.getLongitud().doubleValue();
+                        double dist = Math.pow(cLat - zLat, 2) + Math.pow(cLng - zLng, 2);
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            zonaMasCercana = z;
                         }
                     }
                 }
-                
-                if (zonaMasCercana == null && !zonas.isEmpty()) {
+            }
+
+            if (zonaMasCercana == null && !zonas.isEmpty()) {
+                // Si no tiene coordenadas o no se pudo determinar, y la zona actual no existe,
+                // asignamos la primera zona como fallback.
+                boolean existeZona = cZonaId != null && zonas.stream().anyMatch(z -> z.getZonaId().equals(cZonaId));
+                if (!existeZona) {
                     zonaMasCercana = zonas.get(0);
                 }
-                
-                if (zonaMasCercana != null) {
-                    c.setZonaId(zonaMasCercana.getZonaId());
-                    if (c.getUbicacion() == null && c.getLatitud() != null && c.getLongitud() != null) {
-                        c.setUbicacion(new org.springframework.data.mongodb.core.geo.GeoJsonPoint(c.getLongitud().doubleValue(), c.getLatitud().doubleValue()));
-                    }
-                    comercioRepository.save(c);
-                    corregidos++;
+            }
+
+            if (zonaMasCercana != null && !zonaMasCercana.getZonaId().equals(cZonaId)) {
+                c.setZonaId(zonaMasCercana.getZonaId());
+                if (c.getUbicacion() == null && c.getLatitud() != null && c.getLongitud() != null) {
+                    c.setUbicacion(new org.springframework.data.mongodb.core.geo.GeoJsonPoint(c.getLongitud().doubleValue(), c.getLatitud().doubleValue()));
                 }
+                comercioRepository.save(c);
+                corregidos++;
             }
         }
-        log.info("Auto-corrección de zonas finalizada. Comercios re-asociados: {}/{}", corregidos, comercios.size());
+        log.info("Auto-corrección de zonas finalizada. Comercios re-asociados a su zona geográfica real: {}/{}", corregidos, comercios.size());
     }
 }

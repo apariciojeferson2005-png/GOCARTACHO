@@ -1028,3 +1028,71 @@ tr:hover td {
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
+
+/* =========================================
+   RESPONSIVE MOBILE & TABLET
+   ========================================= */
+@media (max-width: 1024px) {
+    body {
+        overflow-y: auto;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .admin-overlay {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        z-index: 30;
+    }
+
+    .sidebar-header, .sidebar-upgrade-card, .logout-section, .sidebar-divider, .sidebar-section-title {
+        display: none; /* Ocultar para una barra de navegación móvil limpia */
+    }
+
+    .sidebar-menu {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        flex: 1;
+        scrollbar-width: none; /* Firefox */
+    }
+    .sidebar-menu::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+
+    .sidebar-menu li {
+        flex-shrink: 0;
+    }
+
+    .main-content {
+        padding: 20px 15px;
+        overflow-y: visible;
+    }
+
+    .admin-navbar {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .navbar-search {
+        width: 100%;
+        order: 3; /* Mover la búsqueda abajo */
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 800px; /* Forzar scroll en tablas anchas */
+    }
+}

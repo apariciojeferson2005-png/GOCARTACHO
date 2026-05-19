@@ -1,4 +1,4 @@
-/* ===================================================
+e aseguro de/* ===================================================
    PLANES MÁGICAS — Gocartacho · Premium Experience
    =================================================== */
 * {
@@ -191,7 +191,7 @@ body::before {
     position: relative;
     z-index: 10;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
     gap: 32px;
     align-items: stretch;
 }
@@ -550,7 +550,7 @@ body::before {
 }
 
 /* Responsive */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .navbar {
         padding: 0 16px;
     }
@@ -563,9 +563,34 @@ body::before {
         font-size: 2.2rem;
     }
 
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .container {
+        padding: 0 16px 60px;
+        gap: 24px;
+    }
+
     .plan-header,
     .plan-body {
         padding: 24px 20px;
+    }
+
+    .plan-header h3 {
+        font-size: 1.4rem;
+    }
+
+    .plan-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+        margin-left: 16px;
+    }
+
+    .btn-ver {
+        width: 100%;
+        justify-content: center;
     }
 
     .timeline::before {
