@@ -14,6 +14,9 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
+# Install ca-certificates and openssl to fix TLS/SSL connection issues (e.g. MongoDB Atlas)
+RUN apk add --no-cache ca-certificates openssl && update-ca-certificates
+
 # Add a non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
