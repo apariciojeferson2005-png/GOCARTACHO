@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Moderación de Reseñas',
+    activeSection='moderacion',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div class="welcome-banner">
+            <h1>Moderación de <span style="color:var(--accent);">Contenido</span></h1>
+            <p>Atiende reportes de la comunidad sobre reseñas inapropiadas.</p>
+        </div>
+
+        <div class="table-container">
+            <div id="resenas-reportadas-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Buscando contenido reportado...</p>
+            </div>
+        </div>
+        <div id="moderacion-pagination"></div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadResenasReportadas();
+        });
+    </script>
+</body>
+</html>
+
+

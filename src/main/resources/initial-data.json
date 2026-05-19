@@ -1,0 +1,81 @@
+{
+  "usuarios": [
+    { "email": "user@example.com", "nombre": "Carlos Méndez", "rol": "USER" },
+    { "email": "admin@example.com", "nombre": "Ana Administradora", "rol": "ADMIN" },
+    { "email": "negocio@example.com", "nombre": "Pedro Comerciante", "rol": "USER" },
+    { "email": "turista@example.com", "nombre": "María Turista", "rol": "USER" }
+  ],
+  "zonas": [
+    { "zonaId": "1", "nombre": "Centro Histórico", "descripcion": "Centro histórico declarado Patrimonio de la Humanidad. Calles coloniales, iglesias y plazas icónicas.", "latitud": 10.4236, "longitud": -75.5510 },
+    { "zonaId": "2", "nombre": "Getsemaní", "descripcion": "Barrio bohemio y artístico con murales, vida nocturna vibrante y la emblemática Plaza de la Trinidad.", "latitud": 10.4210, "longitud": -75.5530 },
+    { "zonaId": "3", "nombre": "Bocagrande", "descripcion": "Zona hotelera y turística principal con playas, centros comerciales y restaurantes de alta gama.", "latitud": 10.3985, "longitud": -75.5602 },
+    { "zonaId": "4", "nombre": "Castillogrande", "descripcion": "Área residencial exclusiva con playas tranquilas y vistas al mar Caribe.", "latitud": 10.3920, "longitud": -75.5650 },
+    { "zonaId": "5", "nombre": "Manga", "descripcion": "Isla con arquitectura republicana, restaurantes locales y ambiente residencial tradicional.", "latitud": 10.4120, "longitud": -75.5420 },
+    { "zonaId": "7", "nombre": "San Diego", "descripcion": "Sector dentro de las murallas con hoteles boutique, galerías de arte y restaurantes gourmet.", "latitud": 10.4270, "longitud": -75.5490 },
+    { "zonaId": "8", "nombre": "La Matuna", "descripcion": "Área comercial popular con tiendas locales, vendedores ambulantes y mucha actividad diurna.", "latitud": 10.4195, "longitud": -75.5475 }
+  ],
+  "comercios": [
+    { "comercioId": "1", "nombre": "La Cevichería", "descripcion": "El mejor ceviche de Cartagena, famoso internacionalmente.", "direccion": "Calle Stuart 7-14, Centro", "latitud": 10.42400000, "longitud": -75.55150000, "tipoNegocio": "Restaurante", "horarioApertura": "12:00", "horarioCierre": "22:00", "telefono": "+57 5 660 1492", "emailContacto": "info@lacevicheria.co", "zonaId": "1", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "2", "nombre": "Museo del Oro Zenú", "descripcion": "Colección de orfebrería precolombina de la cultura Zenú. Entrada gratuita.", "direccion": "Plaza de Bolívar, Centro", "latitud": 10.42320000, "longitud": -75.55060000, "tipoNegocio": "Museo", "horarioApertura": "09:00", "horarioCierre": "17:00", "telefono": "+57 5 660 0808", "emailContacto": "museo@banrep.gov.co", "zonaId": "1", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "3", "nombre": "Abaco Libros y Café", "descripcion": "Librería-café con ambiente literario, terraza colonial y excelente café colombiano.", "direccion": "Calle de la Iglesia 36-27", "latitud": 10.42450000, "longitud": -75.54980000, "tipoNegocio": "Restaurante", "horarioApertura": "08:00", "horarioCierre": "22:00", "telefono": "+57 5 664 8338", "emailContacto": "contacto@abaco.co", "zonaId": "1", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "4", "nombre": "Joyería Caribe", "descripcion": "Esmeraldas colombianas certificadas y joyas artesanales de diseñadores locales.", "direccion": "Calle Santo Domingo 3-19", "latitud": 10.42380000, "longitud": -75.55020000, "tipoNegocio": "Tienda", "horarioApertura": "09:00", "horarioCierre": "19:00", "telefono": "+57 5 664 5012", "emailContacto": "ventas@joyeriacaribe.com", "zonaId": "1", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "5", "nombre": "Donde Fidel", "descripcion": "Bar emblemático de salsa en vivo. Punto de encuentro nocturno desde 1986.", "direccion": "Portal de los Dulces", "latitud": 10.42550000, "longitud": -75.55180000, "tipoNegocio": "Bar", "horarioApertura": "17:00", "horarioCierre": "03:00", "telefono": "+57 5 664 1127", "emailContacto": "info@dondefidel.com", "zonaId": "1", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "6", "nombre": "Café del Mural", "descripcion": "Café artesanal en el corazón de Getsemaní, rodeado de arte callejero.", "direccion": "Calle de la Sierpe 9B-67", "latitud": 10.42050000, "longitud": -75.55350000, "tipoNegocio": "Restaurante", "horarioApertura": "07:00", "horarioCierre": "21:00", "telefono": "+57 315 555 1234", "emailContacto": "cafedelmural@gmail.com", "zonaId": "2", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "7", "nombre": "Bazurto Social Club", "descripcion": "Bar-restaurante con cocina caribeña contemporánea y DJ sets nocturnos.", "direccion": "Calle Media Luna 8-26", "latitud": 10.42120000, "longitud": -75.55280000, "tipoNegocio": "Bar", "horarioApertura": "18:00", "horarioCierre": "02:00", "telefono": "+57 5 660 0909", "emailContacto": "reservas@bazurtosocial.com", "zonaId": "2", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "8", "nombre": "Tienda Artesanal Getsemaní", "descripcion": "Artesanías, souvenirs y productos hechos a mano por artistas locales.", "direccion": "Plaza de la Trinidad", "latitud": 10.42080000, "longitud": -75.55320000, "tipoNegocio": "Tienda", "horarioApertura": "09:00", "horarioCierre": "20:00", "telefono": "+57 310 555 4567", "emailContacto": "artesanias@getsemani.co", "zonaId": "2", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "9", "nombre": "Demente Tapas & Bar", "descripcion": "Tapas fusión caribeña con cócteles creativos y terraza al aire libre.", "direccion": "Calle del Pozo 25-108", "latitud": 10.42150000, "longitud": -75.55250000, "tipoNegocio": "Bar", "horarioApertura": "17:00", "horarioCierre": "01:00", "telefono": "+57 5 660 3456", "emailContacto": "info@dementetapas.com", "zonaId": "2", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "10", "nombre": "Harry's Steakhouse", "descripcion": "Steakhouse premium con cortes importados y vista al mar. Dress code elegante.", "direccion": "Carrera 2 #6-161", "latitud": 10.39900000, "longitud": -75.56080000, "tipoNegocio": "Restaurante", "horarioApertura": "12:00", "horarioCierre": "23:00", "telefono": "+57 5 665 7878", "emailContacto": "reservas@harrys.co", "zonaId": "3", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "11", "nombre": "Centro Comercial Bocagrande", "descripcion": "Mall con tiendas de moda, cine y zona de comidas con vista al Caribe.", "direccion": "Carrera 2 #8-146", "latitud": 10.39750000, "longitud": -75.56150000, "tipoNegocio": "Tienda", "horarioApertura": "10:00", "horarioCierre": "21:00", "telefono": "+57 5 665 0000", "emailContacto": "info@ccbocagrande.com", "zonaId": "3", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "12", "nombre": "Museo Naval del Caribe", "descripcion": "Historia naval de Colombia y el Caribe.", "direccion": "Calle San Martín, Bocagrande", "latitud": 10.39950000, "longitud": -75.55980000, "tipoNegocio": "Museo", "horarioApertura": "09:00", "horarioCierre": "17:00", "telefono": "+57 5 665 2222", "emailContacto": "museo@naval.mil.co", "zonaId": "3", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "13", "nombre": "Beach Club Blu", "descripcion": "Club de playa con piscina, cócteles y gastronomía mediterránea.", "direccion": "Av. San Martín #7-199", "latitud": 10.39600000, "longitud": -75.56250000, "tipoNegocio": "Bar", "horarioApertura": "10:00", "horarioCierre": "00:00", "telefono": "+57 5 665 8888", "emailContacto": "reservas@blubocagrande.com", "zonaId": "3", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "14", "nombre": "Casa de la Cerveza", "descripcion": "Cervecería artesanal con más de 20 cervezas colombianas de barril.", "direccion": "Calle del Colegio 34-12", "latitud": 10.42720000, "longitud": -75.54920000, "tipoNegocio": "Bar", "horarioApertura": "16:00", "horarioCierre": "00:00", "telefono": "+57 5 664 7890", "emailContacto": "info@casadelacerveza.co", "zonaId": "7", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "15", "nombre": "Restaurante Interno", "descripcion": "Alta cocina colombiana con ingredientes de temporada en ambiente colonial.", "direccion": "Calle de Ayos 4-46", "latitud": 10.42680000, "longitud": -75.54880000, "tipoNegocio": "Restaurante", "horarioApertura": "12:00", "horarioCierre": "22:30", "telefono": "+57 5 664 9876", "emailContacto": "reservas@interno.co", "zonaId": "7", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "16", "nombre": "Galería San Diego", "descripcion": "Galería de arte contemporáneo colombiano y caribeño.", "direccion": "Calle San Diego 8-11", "latitud": 10.42650000, "longitud": -75.54950000, "tipoNegocio": "Museo", "horarioApertura": "10:00", "horarioCierre": "19:00", "telefono": "+57 5 664 5555", "emailContacto": "galeria@sandiego.co", "zonaId": "7", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "17", "nombre": "Mercado Santa Rita", "descripcion": "Mercado popular con frutas tropicales, jugos naturales y almuerzos económicos.", "direccion": "Calle del Tablón, Matuna", "latitud": 10.41980000, "longitud": -75.54780000, "tipoNegocio": "Restaurante", "horarioApertura": "06:00", "horarioCierre": "16:00", "telefono": "+57 315 555 9999", "emailContacto": "mercadosantarita@gmail.com", "zonaId": "8", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "18", "nombre": "Tecnotienda Matuna", "descripcion": "Electrónica, celulares y accesorios tech a precios competitivos.", "direccion": "Carrera 10 #33-40", "latitud": 10.41920000, "longitud": -75.54720000, "tipoNegocio": "Tienda", "horarioApertura": "08:00", "horarioCierre": "18:00", "telefono": "+57 5 664 3333", "emailContacto": "ventas@tecnotienda.co", "zonaId": "8", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "19", "nombre": "Club de Pesca", "descripcion": "Restaurante sobre el agua con mariscos frescos y atardeceres espectaculares.", "direccion": "Fuerte San Sebastián del Pastelillo", "latitud": 10.41250000, "longitud": -75.54250000, "tipoNegocio": "Restaurante", "horarioApertura": "12:00", "horarioCierre": "23:00", "telefono": "+57 5 660 4594", "emailContacto": "reservas@clubdepesca.com", "zonaId": "5", "estadoAprobacion": "APROBADO" },
+    { "comercioId": "20", "nombre": "Palacio de la Inquisición", "descripcion": "Museo histórico con instrumentos de tortura y jardín colonial. Patrimonio Nacional.", "direccion": "Plaza de Bolívar", "latitud": 10.42300000, "longitud": -75.55080000, "tipoNegocio": "Museo", "horarioApertura": "09:00", "horarioCierre": "18:00", "telefono": "+57 5 660 1671", "emailContacto": "info@palacioinquisicion.co", "zonaId": "1", "estadoAprobacion": "APROBADO" }
+  ],
+  "planes": [
+    { "planId": "1", "nombrePlan": "Plan Colonial Clásica", "descripcion": "Recorre los principales puntos históricos: Desde la Torre del Reloj, pasando por la Plaza de los Coches, Plaza de Bolívar, las bóvedas y terminando en la Plaza Santo Domingo. Ideal para una mañana cultural." },
+    { "planId": "2", "nombrePlan": "Getsemaní Artístico", "descripcion": "Tour por el barrio más artístico de Cartagena: murales callejeros, la Plaza de la Trinidad, cafés bohemios y la vida nocturna más auténtica de la ciudad." },
+    { "planId": "3", "nombrePlan": "Sabores del Caribe", "descripcion": "Plan gastronómica por los mejores restaurantes. Desde ceviches frescos hasta alta cocina colombiana, pasando por cafés artesanales y bares de cócteles." },
+    { "planId": "4", "nombrePlan": "Cartagena de Compras", "descripcion": "Recorrido por las mejores tiendas: joyas de esmeraldas, artesanías tradicionales, moda local y souvenirs únicos." },
+    { "planId": "5", "nombrePlan": "Atardeceres y Vida Nocturna", "descripcion": "La mejor experiencia nocturna: empieza con atardecer en las murallas, continúa con tapas en Getsemaní y termina con salsa en vivo en el centro." }
+  ],
+  "planesComercios": [
+    { "planId": "1", "comercioId": "2", "orden": 1 },
+    { "planId": "1", "comercioId": "20", "orden": 2 },
+    { "planId": "1", "comercioId": "3", "orden": 3 },
+    { "planId": "1", "comercioId": "4", "orden": 4 },
+    { "planId": "1", "comercioId": "16", "orden": 5 },
+    { "planId": "2", "comercioId": "6", "orden": 1 },
+    { "planId": "2", "comercioId": "8", "orden": 2 },
+    { "planId": "2", "comercioId": "9", "orden": 3 },
+    { "planId": "2", "comercioId": "7", "orden": 4 },
+    { "planId": "3", "comercioId": "1", "orden": 1 },
+    { "planId": "3", "comercioId": "6", "orden": 2 },
+    { "planId": "3", "comercioId": "15", "orden": 3 },
+    { "planId": "3", "comercioId": "19", "orden": 4 },
+    { "planId": "3", "comercioId": "10", "orden": 5 },
+    { "planId": "4", "comercioId": "4", "orden": 1 },
+    { "planId": "4", "comercioId": "8", "orden": 2 },
+    { "planId": "4", "comercioId": "11", "orden": 3 },
+    { "planId": "4", "comercioId": "18", "orden": 4 },
+    { "planId": "5", "comercioId": "13", "orden": 1 },
+    { "planId": "5", "comercioId": "9", "orden": 2 },
+    { "planId": "5", "comercioId": "7", "orden": 3 },
+    { "planId": "5", "comercioId": "5", "orden": 4 },
+    { "planId": "5", "comercioId": "14", "orden": 5 }
+  ],
+  "promociones": [
+    { "promocionId": "1", "titulo": "2x1 en Ceviches", "descripcion": "Todos los lunes, lleva dos ceviches por el precio de uno. Aplica presentando la app.", "porcentajeDescuento": 50.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "1" },
+    { "promocionId": "2", "titulo": "Happy Hour", "descripcion": "Cócteles a mitad de precio de 5pm a 7pm de lunes a jueves.", "porcentajeDescuento": 50.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "5" },
+    { "promocionId": "3", "titulo": "Descuento Esmeraldas", "descripcion": "15% de descuento en esmeraldas certificadas presentando la app GO CARTACHO.", "porcentajeDescuento": 15.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-06-30", "activa": true, "comercioId": "4" },
+    { "promocionId": "4", "titulo": "Tour Gratis con Compra", "descripcion": "Compra un café y obtén un tour guiado gratuito por la librería.", "porcentajeDescuento": 0.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "3" },
+    { "promocionId": "5", "titulo": "Brunch Dominical", "descripcion": "Brunch buffet con vista al mar por $45.000 COP. Incluye bebida.", "porcentajeDescuento": 20.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "10" },
+    { "promocionId": "6", "titulo": "Noche de Damas", "descripcion": "Cóctel de bienvenida gratis para mujeres los jueves desde las 9pm.", "porcentajeDescuento": 100.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "7" },
+    { "promocionId": "7", "titulo": "Artesanía + Café", "descripcion": "Compra una artesanía y recibe un café colombiano gratis.", "porcentajeDescuento": 0.00, "fechaInicio": "2026-03-01", "fechaFin": "2026-09-30", "activa": true, "comercioId": "8" },
+    { "promocionId": "8", "titulo": "Menú del Día", "descripcion": "Almuerzo ejecutivo con entrada, plato fuerte y postre por $28.000 COP.", "porcentajeDescuento": 30.00, "fechaInicio": "2026-01-01", "fechaFin": "2026-12-31", "activa": true, "comercioId": "17" }
+  ]
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Gestión de Usuarios',
+    activeSection='usuarios',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div class="welcome-banner">
+            <h1>Gestión de <span style="color:var(--accent3);">Usuarios</span></h1>
+            <p>Control de cuentas de la plataforma y niveles de acceso.</p>
+        </div>
+
+        <form onsubmit="loadUsuarios(); return false;" class="search-form">
+            <input type="text" id="search-usuarios" placeholder="Buscar por nombre o email...">
+            <button type="submit" class="btn-primary">Filtrar</button>
+        </form>
+
+        <div class="table-container">
+            <div id="usuarios-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Cargando base de usuarios...</p>
+            </div>
+        </div>
+        <div id="usuarios-pagination"></div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsuarios();
+        });
+    </script>
+</body>
+</html>
+
+

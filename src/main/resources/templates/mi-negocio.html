@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Negocio - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/mi-negocio.css}">
+    <!-- LEAFLET CDN FOR INTERACTIVE MAP PICKER -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- CHART.JS CDN FOR PREMIUM ANALYTICS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo" class="logo-img"> <span class="logo-text">GOCARTACHO</span></a>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-globe"></i> Explorar</a>
+            <a href="/mi-negocio" class="active"><i class="fas fa-store"></i> Mi Negocio</a>
+            <a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1><i class="fas fa-store" style="color:var(--green);"></i> Portal de Negocios</h1>
+            <p>Registra tu negocio, actualiza tu información y crea promociones exclusivas</p>
+        </div>
+
+        <!-- CENTRO DE NOTIFICACIONES -->
+        <div id="notificaciones-container" style="display:none; margin-bottom: 30px;">
+            <div
+                style="background: var(--card); border: 2px solid var(--accent); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3
+                    style="margin: 0 0 15px 0; font-size: 1.1rem; color: var(--accent); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-bell"></i> Bandeja de Notificaciones
+                </h3>
+                <div id="lista-notificaciones">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Info de negocio existente (se rellena dinámicamente) -->
+        <div id="negocio-existente" style="display:none;"></div>
+
+        <div class="tabs" id="tabs-container">
+            <div class="tab active" id="tab-btn-registrar" onclick="switchTab('registrar', this)"><i
+                    class="fas fa-plus-circle"></i> Registrar Negocio</div>
+            <div class="tab hidden" id="tab-btn-promocion" onclick="switchTab('promocion', this)"><i
+                    class="fas fa-tag"></i> Crear Promoción</div>
+        </div>
+
+        <!-- TAB 1: Registrar Negocio -->
+        <div id="tab-registrar" class="tab-content active">
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> Registra tu negocio para aparecer en el mapa de GO CARTACHO y
+                    conecta con miles de visitantes y residentes de Cartagena.</p>
+            </div>
+            <div class="form-card">
+                <!-- CONTENEDOR DASHBOARD (Se muestra si el negocio ya está aprobado) -->
+                <div id="dashboard-comerciante" style="display:none;"></div>
+
+                <!-- CONTENEDOR FORMULARIO (Se muestra para registro o edición) -->
+                <div id="form-comercio-container">
+                    <h3 id="form-title"><i class="fas fa-edit" style="color:var(--accent2);"></i> Datos del Negocio</h3>
+                    <div id="msg-negocio-success" class="msg msg-success"></div>
+                    <div id="msg-negocio-error" class="msg msg-error"></div>
+                    <form id="formNegocio">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del negocio *</label>
+                                <input type="text" id="neg-nombre" required placeholder="Ej: Mi Restaurante">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de negocio *</label>
+                                <select id="neg-tipo" required>
+                                    <option value="">Selecciona...</option>
+                                    <option th:each="tipo : ${tiposNegocio}" 
+                                            th:value="${tipo.id}" 
+                                            th:text="${tipo.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Zona *</label>
+                                <select id="neg-zona" required>
+                                    <option value="">Selecciona zona...</option>
+                                    <!-- Llenado directamente mediante Thymeleaf desde el Controlador -->
+                                    <option th:each="zona : ${zonas}" th:value="${zona.zonaId}" th:text="${zona.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <input type="text" id="neg-direccion" placeholder="Calle, número...">
+                            </div>
+
+                            <!-- CONTENEDOR LEAFLET MAP PICKER -->
+                            <div class="form-group full" id="map-picker-group" style="margin-top: 10px;">
+                                <label>Selecciona tu ubicación en el mapa (Haz clic para marcar) *</label>
+                                <div id="map-picker" style="height: 250px; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 12px; z-index: 1;"></div>
+                                <button type="button" id="btn-geolocalizar" class="btn-primary" style="margin-top: 0; padding: 10px 18px; font-size: 0.8rem; background: linear-gradient(135deg, var(--azul-caribe, #2b7ba0), #1d5f80); box-shadow: none;"><i class="fas fa-location-arrow"></i> Usar mi ubicación actual</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Latitud *</label>
+                                <input type="number" id="neg-lat" step="any" required placeholder="Ej: 10.4238">
+                            </div>
+                            <div class="form-group">
+                                <label>Longitud *</label>
+                                <input type="number" id="neg-lng" step="any" required placeholder="Ej: -75.5502">
+                            </div>
+                            <div class="form-group">
+                                <label>Horario apertura</label>
+                                <input type="time" id="neg-apertura">
+                            </div>
+                            <div class="form-group">
+                                <label>Horario cierre</label>
+                                <input type="time" id="neg-cierre">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="neg-telefono" placeholder="+57 ...">
+                            </div>
+                            <div class="form-group">
+                                <label>Email de contacto</label>
+                                <input type="email" id="neg-email" placeholder="contacto@negocio.com">
+                            </div>
+                            <div class="form-group full">
+                                <label>URL de Imagen del local (Opcional)</label>
+                                <input type="url" id="neg-imagen" placeholder="Ej: https://.../mi_local.jpg">
+                            </div>
+                            <div class="form-group full">
+                                <label>Descripción</label>
+                                <textarea id="neg-descripcion"
+                                    placeholder="Describe tu negocio, qué ofreces, qué lo hace especial..."></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-submit-negocio" class="btn-primary"><i class="fas fa-save"></i> Registrar Negocio</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Crear Promoción -->
+        <div id="tab-promocion" class="tab-content">
+            <div class="info-box">
+                <p><i class="fas fa-tag"></i> Crea promociones exclusivas para usuarios de GO CARTACHO. Las promociones
+                    aparecerán junto a tu negocio en el mapa.</p>
+            </div>
+            <div class="form-card">
+                <h3><i class="fas fa-percentage" style="color:var(--gold);"></i> Nueva Promoción</h3>
+                <div id="msg-promo-success" class="msg msg-success"></div>
+                <div id="msg-promo-error" class="msg msg-error"></div>
+                <p id="promo-comercio-info" style="color:var(--muted);font-size:0.85rem;margin-bottom:16px;"></p>
+                <form id="formPromocion">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Porcentaje de descuento</label>
+                            <input type="number" id="promo-descuento" min="0" max="100" placeholder="Ej: 20">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha inicio *</label>
+                            <input type="date" id="promo-inicio" required>
+                        </div>
+                        <div class="form-group full">
+                            <label>Título de la promoción *</label>
+                            <input type="text" id="promo-titulo" required placeholder="Ej: 2x1 en cócteles">
+                        </div>
+                        <div class="form-group full">
+                            <label>Descripción</label>
+                            <textarea id="promo-descripcion"
+                                placeholder="Describe los detalles de la promoción..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha fin *</label>
+                            <input type="date" id="promo-fin" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary btn-promo"><i class="fas fa-tag"></i> Crear
+                        Promoción</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREMIUM CONFIRMATION MODAL -->
+    <div id="confirmacionModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); transition: all 0.3s ease;" class="hidden">
+        <div style="max-width: 420px; width: 90%; border: 1px solid rgba(255,255,255,0.15); background: rgba(10, 25, 41, 0.95); color: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="font-size: 3rem; color: #009EE3; margin-bottom: 15px;">
+                <i id="confirmacionIcono" class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2 id="confirmacionTitulo" style="margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 700; color: #fff;">¿Confirmar Acción?</h2>
+            <p id="confirmacionMensaje" style="font-size: 0.95rem; line-height: 1.5; color: rgba(255, 255, 255, 0.8); margin: 0 0 25px 0;">¿Estás seguro de que deseas continuar?</p>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button onclick="cerrarConfirmacionModal()" style="background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Cancelar</button>
+                <button id="btnAceptarConfirmacion" style="background: linear-gradient(135deg, #009EE3, #007bb2); border: none; color: #fff; border-radius: 8px; padding: 10px 24px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/mi-negocio.js}"></script>
+</body>
+
+</html>
+

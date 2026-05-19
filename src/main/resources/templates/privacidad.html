@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/privacidad.css}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo" class="logo-img"> <span class="logo-text">GOCARTACHO</span></a>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-arrow-left"></i> Volver al mapa</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h1><i class="fas fa-shield-alt"></i> Política de Privacidad</h1>
+        <p class="update-date">Última actualización: Mayo 2026</p>
+
+        <div class="highlight-box">
+            <h3><i class="fas fa-lock"></i> Compromiso Principal</h3>
+            <p>La privacidad y seguridad de tus datos son nuestra <strong>prioridad absoluta</strong>. Los datos de
+                ubicación utilizados para generar los mapas de calor se procesan de forma <strong>completamente anónima
+                    y agregada</strong>, haciendo imposible la identificación de cualquier individuo.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-database"></i> 1. Datos que Recopilamos</h2>
+            <ul>
+                <li><strong>Datos de ubicación anónimos:</strong> Coordenadas geográficas generalizadas que se asocian a
+                    un hash de dispositivo irreversible. No se vinculan a tu identidad personal.</li>
+                <li><strong>Datos de registro:</strong> Email, nombre y contraseña (encriptada con BCrypt) cuando creas
+                    una cuenta voluntariamente.</li>
+                <li><strong>Datos de interacción:</strong> Reseñas y calificaciones que publicas voluntariamente sobre
+                    negocios.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-cogs"></i> 2. Cómo Usamos los Datos</h2>
+            <ul>
+                <li><strong>Mapas de calor:</strong> Los datos de ubicación se agregan estadísticamente para mostrar
+                    densidades de personas en zonas geográficas. Nunca se muestran posiciones individuales.</li>
+                <li><strong>Planes populares:</strong> Se utilizan datos históricos agregados para sugerir itinerarios
+                    optimizados.</li>
+                <li><strong>Mejora del servicio:</strong> Los datos agregados nos ayudan a mejorar la experiencia de
+                    usuario.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-user-shield"></i> 3. Protección de Datos</h2>
+            <ul>
+                <li>Las contraseñas se almacenan con encriptación BCrypt (estándar de la industria).</li>
+                <li>Los datos de ubicación se procesan con hashes irreversibles que impiden la re-identificación.</li>
+                <li>Las sesiones de usuario se gestionan de forma segura con timeout automático.</li>
+                <li>Las cookies de sesión están configuradas como HTTP-only para prevenir ataques XSS.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-share-alt"></i> 4. Compartición de Datos</h2>
+            <p>No vendemos, alquilamos ni compartimos tus datos personales con terceros. Los datos de afluencia son
+                puramente estadísticos y se utilizan exclusivamente dentro de la plataforma GO CARTACHO.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-user-edit"></i> 5. Tus Derechos</h2>
+            <ul>
+                <li><strong>Acceso:</strong> Puedes solicitar una copia de tus datos personales.</li>
+                <li><strong>Rectificación:</strong> Puedes actualizar tu información en cualquier momento.</li>
+                <li><strong>Eliminación:</strong> Puedes solicitar la eliminación de tu cuenta y datos asociados.</li>
+                <li><strong>Oposición:</strong> Puedes dejar de contribuir datos de ubicación desactivando la
+                    geolocalización de tu dispositivo.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-store"></i> 6. Datos de Negocios</h2>
+            <p>Los negocios registrados en la plataforma comparten voluntariamente su información de contacto, horarios
+                y promociones. Esta información es pública y visible para todos los usuarios de la aplicación.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-envelope"></i> 7. Contacto</h2>
+            <p>Para consultas relacionadas con la privacidad, puedes contactarnos a:
+                <strong>privacidad@gocartacho.com</strong></p>
+        </div>
+    </div>
+</body>
+
+</html>
+

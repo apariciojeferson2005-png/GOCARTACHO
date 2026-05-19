@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Interno - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradiente: radial-gradient(circle at 100% 0%, rgba(43, 123, 160, 0.15) 0%, transparent 40%),
+                            radial-gradient(circle at 0% 100%, rgba(196, 113, 74, 0.15) 0%, transparent 40%),
+                            #faf8f5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-gradiente);
+            color: #3c2e20;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .error-container {
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 50px rgba(60, 46, 32, 0.05);
+            animation: errorPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes errorPop {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .logo-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 25px;
+        }
+
+        .logo-back img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-back span {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #c4714a;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #c4714a, #2d8a56);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .icon-container {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            color: #c4714a;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 15px 0;
+            color: #3c2e20;
+        }
+
+        p.error-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #6d5b4a;
+            margin: 0 0 30px 0;
+        }
+
+        .buttons-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .btn-main {
+            background: linear-gradient(135deg, #c4714a, #b35d35);
+            color: white;
+            box-shadow: 0 8px 20px rgba(196, 113, 74, 0.2);
+            border: none;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(196, 113, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(60, 46, 32, 0.05);
+            color: #3c2e20;
+            border: 1px solid rgba(60, 46, 32, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(60, 46, 32, 0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <!-- LOGO BRANDING -->
+        <a href="/" class="logo-back">
+            <img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo">
+            <span>GOCARTACHO</span>
+        </a>
+
+        <!-- ERROR CODE BADGE -->
+        <div class="status-badge">500</div>
+
+        <div>
+            <div class="icon-container"><i class="fas fa-exclamation-triangle"></i></div>
+            <h1>Error Interno del Servidor</h1>
+            <p class="error-desc" th:text="${message ?: 'Ha ocurrido un inconveniente inesperado al procesar tu solicitud. Por favor, reinténtalo más tarde.'}">Ha ocurrido un inconveniente inesperado al procesar tu solicitud. Por favor, reinténtalo más tarde.</p>
+        </div>
+
+        <!-- BUTTONS ACTION GROUPS -->
+        <div class="buttons-group">
+            <a href="/" class="btn-action btn-main"><i class="fas fa-home"></i> Ir a la Página Principal</a>
+            <a th:href="${#request.getHeader('Referer') != null} ? ${#request.getHeader('Referer')} : '/'" class="btn-action btn-secondary"><i class="fas fa-arrow-left"></i> Regresar</a>
+        </div>
+    </div>
+</body>
+</html>

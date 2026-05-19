@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorar Negocios - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/explorar.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="explorar-page">
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/'"><img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo" class="logo-img"> <span class="logo-text">GOCARTACHO</span></div>
+        <div class="nav-links">
+            <a th:href="@{/}" aria-label="Explorar mapa"><i class="fas fa-map"></i> <span>Mapa</span></a>
+            <a th:href="@{/promociones}"><i class="fas fa-tags"></i> <span>Promociones</span></a>
+            <a th:href="@{/planes}"><i class="fas fa-compass"></i> <span>Planes</span></a>
+        </div>
+    </nav>
+
+    <header class="explorar-header"
+        th:style="'background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(' + 
+        (${zona.numero == 1} ? 'https://cdn.yate.co/img/blog/2023/1/plaza-santo-domingo-ctg-0psx640.jpg' : 
+        (${zona.numero == 2} ? 'https://cdn.yate.co/img/blog/2023/1/getsemani-cartagena-zopx640.jpg' : 
+        (${zona.numero == 3} ? 'https://cdn.yate.co/img/blog/2023/1/51-sky-bar-lv8x640.jpg' : 
+        (${zona.numero == 7} ? 'https://cdn.yate.co/img/blog/2023/1/muralla-cartagena-2uhx640.jpg' : 
+        'https://cdn.yate.co/img/blog/2023/1/imagen-ppal-3dcx640.jpg')))) + '); background-size: cover; background-position: center;'">
+        
+        <!-- Flecha Izquierda (Anterior Zona) -->
+        <a href="#" class="nav-arrow prev-arrow hidden" id="prev-zone-btn" aria-label="Zona Anterior">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+
+        <div class="header-content">
+            <h1 th:text="${zona.nombre}">Nombre de la Zona</h1>
+            <p th:text="${zona.descripcion}">Descripción de la zona...</p>
+        </div>
+
+        <!-- Flecha Derecha (Siguiente Zona) -->
+        <a href="#" class="nav-arrow next-arrow hidden" id="next-zone-btn" aria-label="Siguiente Zona">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </header>
+
+    <main class="container-directory">
+        <aside class="filters-sidebar">
+            <h3><i class="fas fa-sliders-h"></i> Filtros</h3>
+
+            <div class="filter-group">
+                <label for="tipo-negocio">Categoría</label>
+                <select id="tipo-negocio">
+                    <option value="">Todas las categorías</option>
+                    <option th:each="tipo : ${tiposNegocio}" th:value="${tipo.id}" th:text="${tipo.nombre}"></option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="ordenar">Ordenar por</label>
+                <select id="ordenar">
+                    <option value="valoracion">Mejor valorados</option>
+                    <option value="nombre">Nombre (A-Z)</option>
+                    <option value="recientes">Más recientes</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Horario</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="abierto-ahora"> Abierto ahora</label>
+                </div>
+            </div>
+
+            <button id="btn-aplicar" class="btn-primary">Aplicar Filtros</button>
+
+            <!-- Contenedor Historial de Afluencia -->
+            <div id="historial-afluencia" class="hidden" style="margin-top: 25px; padding: 15px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
+                <h3 style="font-size: 1rem; color: var(--accent2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; margin-top: 0;">
+                    <i class="fas fa-chart-bar"></i> Afluencia Típica
+                </h3>
+                <div id="historial-afluencia-chart" style="display: flex; align-items: flex-end; gap: 4px; height: 80px; padding-bottom: 5px;">
+                    <!-- Barras dinámicas -->
+                </div>
+                <div id="historial-afluencia-labels" style="display: flex; gap: 4px; border-top: 1px solid var(--border); padding-top: 5px;">
+                    <!-- Etiquetas dinámicas -->
+                </div>
+            </div>
+        </aside>
+
+        <section class="results-grid">
+            <div id="loader" class="hidden" style="text-align: center; padding: 50px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <img th:src="@{/images/Cargando_GC.png}" alt="Cargando..." style="width: 80px; height: auto; animation: pulseLoading 1.5s infinite ease-in-out; filter: drop-shadow(0 0 8px rgba(224, 122, 95, 0.4));">
+                <p style="margin-top: 15px; font-weight: 600; color: #e07a5f; font-size: 0.95rem; letter-spacing: 1px;">CARGANDO EXPERIENCIAS...</p>
+            </div>
+            <div id="grid-comercios">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <div id="empty-state" class="hidden">
+                <i class="fas fa-search"></i>
+                <p>No se encontraron negocios con estos criterios.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE RESEÑAS (Reutilizado) -->
+    <div id="modal-resenas" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button onclick="cerrarModalResenas()" class="close-btn">&times;</button>
+            <h3 id="modal-resenas-titulo">Reseñas</h3>
+            <div id="modal-resenas-lista"></div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const zonaNumero = /*[[${zonaNumero}]]*/ '1';
+    </script>
+    <script th:src="@{/js/explorar.js}"></script>
+</body>
+
+</html>
+

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="GO CARTACHO - Mapa de calor interactivo de Cartagena, Colombia. Descubre zonas de alta actividad, negocios populares y promociones exclusivas.">
+    <title>GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body class="map-page">
+
+    <!-- PRELOADER GLOBAL TEMATIZADO -->
+    <div id="preloader-global" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #004B73; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease;">
+        <img th:src="@{/images/Cargando_GC.png}" alt="GoCartacho..." style="width: 130px; height: auto; animation: pulsePreloader 1.6s infinite ease-in-out; filter: drop-shadow(0 0 15px rgba(0, 158, 227, 0.6));">
+        <h1 style="color: white; font-family: 'Montserrat', sans-serif; font-size: 1.6rem; margin-top: 25px; letter-spacing: 4px; font-weight: 700;">GO CARTACHO</h1>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; letter-spacing: 2px; margin-top: 8px; font-family: 'Inter', sans-serif;">PREPARANDO TU AVENTURA...</p>
+    </div>
+
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="logo" onclick="window.location.href='/'"><img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo" class="logo-img"> <span class="logo-text">GOCARTACHO</span></div>
+        
+        <!-- BARRA DE BÚSQUEDA INTEGRADA EN NAVBAR -->
+        <div class="search-bar-container-nav">
+            <i class="fas fa-search search-icon-nav"></i>
+            <input type="text" id="busqueda-global" placeholder="Buscar comercio por nombre..." onkeyup="buscarComerciosGlobal(this.value)">
+        </div>
+        
+        <div class="nav-links">
+            <a th:href="@{/}" class="active" aria-label="Explorar mapa"><i class="fas fa-map"></i>
+                <span>Descubrir</span></a>
+            <a th:href="@{/promociones}" aria-label="Ver promociones"><i class="fas fa-tags"></i>
+                <span>Promociones</span></a>
+            <a th:href="@{/planes}" aria-label="Ver planes"><i class="fas fa-compass"></i> <span>Planes</span></a>
+            <a href="/mi-negocio" id="btn-negocio" class="hidden" aria-label="Mi negocio"><i class="fas fa-store"></i>
+                <span>Mi Negocio</span></a>
+            <a href="/dashboard" id="btn-dashboard" class="btn-dashboard hidden" aria-label="Dashboard"><i
+                    class="fas fa-key"></i> <span>Panel de Gestión</span></a>
+            <a href="/login" id="btn-login" class="btn-login-nav hidden" aria-label="Iniciar sesión"><i
+                    class="fas fa-user-circle"></i> <span>Ingresar</span></a>
+            <div id="user-menu" class="user-menu hidden">
+                <img id="navbar-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" class="navbar-avatar-img">
+                <span id="username-display" class="username"></span>
+                <button class="btn-settings-nav" onclick="abrirModalSettings()" title="Configuración">
+                    <i class="fas fa-cog fa-spin-hover"></i>
+                </button>
+                <button onclick="logout()" class="btn-logout-nav" title="Cerrar sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2 id="zona-titulo" style="font-family: var(--font-serif);"><i class="fas fa-archway"
+                        style="color:var(--accent); opacity: 0.8;"></i> La Heroica</h2>
+                <p class="subtitle">Descubre los encantos de Cartagena de Indias. Selecciona una zona en el mapa.</p>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="filters-panel">
+                <h3><i class="fas fa-filter"></i> Refinar Búsqueda</h3>
+                <div class="filter-row">
+                    <select id="filtro-tipo" class="filter-select" aria-label="Filtrar por tipo de negocio">
+                        <option value="">Todos los tipos</option>
+                        <option th:each="tipo : ${tiposNegocio}" th:value="${tipo.id}" th:text="${tipo.nombre}">
+                        </option>
+                    </select>
+                    <select id="filtro-hora" class="filter-select" aria-label="Filtrar por franja horaria">
+                        <option value="">Hora actual</option>
+                        <option value="8">Mañana (8:00)</option>
+                        <option value="12">Mediodía (12:00)</option>
+                        <option value="16">Tarde (16:00)</option>
+                        <option value="20">Noche (20:00)</option>
+                        <option value="23">Madrugada (23:00)</option>
+                    </select>
+                </div>
+                <div class="filter-chips" id="zona-chips">
+                    <!-- Se llenan dinámicamente -->
+                </div>
+            </div>
+
+
+
+            <div id="lista-comercios">
+                <div class="empty-state">
+                    <i class="fas fa-hand-pointer"></i>
+                    <p>Selecciona una zona en el mapa<br>o un chip arriba para explorar</p>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="/privacidad"><i class="fas fa-shield-alt"></i> Privacidad — Los datos de ubicación se procesan
+                    de forma anónima</a>
+            </div>
+        </div>
+        <div id="map">
+            <button id="btn-locate" class="btn-locate" title="Ir a mi ubicación" aria-label="Ubicar mi posición">
+                <i class="fas fa-crosshairs"></i>
+            </button>
+            <!-- Leyenda de zonas -->
+            <div id="zona-legend">
+                <h4><i class="fas fa-layer-group" style="margin-right:5px;"></i>Zonas</h4>
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE RESEÑAS -->
+    <div id="modal-resenas" class="modal-overlay hidden"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;">
+        <div class="modal-content"
+            style="background:var(--bg-card); border:1px solid var(--border); width:90%; max-width:500px; border-radius:15px; padding:25px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            <button onclick="cerrarModalResenas()"
+                style="position:absolute; top:15px; right:15px; background:transparent; border:none; color:var(--text); font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h3 id="modal-resenas-titulo" style="color:var(--accent2); margin-bottom:20px;">Reseñas de Negocio</h3>
+            <div id="modal-resenas-lista"
+                style="max-height:300px; overflow-y:auto; margin-bottom:20px; border-bottom:1px solid var(--border);">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- FORMULARIO NUEVA RESEÑA -->
+            <div id="form-nueva-resena" class="hidden">
+                <h4 style="margin-bottom:10px; font-size:0.9rem;"><i class="fas fa-pen-nib"></i> Tu opinión importa</h4>
+                <div style="display:flex; gap:5px; margin-bottom:10px;" id="star-rating">
+                    <i class="far fa-star star-btn" data-val="1" style="cursor:pointer; color:var(--gold);"></i>
+                    <i class="far fa-star star-btn" data-val="2" style="cursor:pointer; color:var(--gold);"></i>
+                    <i class="far fa-star star-btn" data-val="3" style="cursor:pointer; color:var(--gold);"></i>
+                    <i class="far fa-star star-btn" data-val="4" style="cursor:pointer; color:var(--gold);"></i>
+                    <i class="far fa-star star-btn" data-val="5" style="cursor:pointer; color:var(--gold);"></i>
+                </div>
+                <textarea id="resena-comentario" placeholder="¿Qué te pareció este lugar?"
+                    style="width:100%; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); padding:10px; font-size:0.85rem; height:60px; margin-bottom:10px; resize:none;"></textarea>
+                <div style="text-align:right;">
+                    <button onclick="enviarResena()"
+                        style="background:var(--accent2); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;"><i
+                            class="fas fa-paper-plane"></i> Enviar Opinión</button>
+                </div>
+            </div>
+            <p id="msg-login-resena" class="hidden" style="text-align:center; font-size:0.8rem; color:var(--muted);"><i
+                    class="fas fa-lock"></i> <a href="/login" style="color:var(--accent);">Ingresa</a> para dejar una
+                reseña.</p>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN (SETTINGS) -->
+    <div id="modal-settings" class="modal-overlay hidden">
+        <div class="modal-content settings-modal">
+            <div class="settings-header">
+                <h3><i class="fas fa-user-cog"></i> Configuración de Cuenta</h3>
+                <button onclick="cerrarModalSettings()" class="btn-close-modal">&times;</button>
+            </div>
+            
+            <div class="settings-body">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" onclick="switchTab('perfil')">
+                        <i class="fas fa-user-circle"></i> Mi Perfil
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('seguridad')">
+                        <i class="fas fa-lock"></i> Seguridad y Acceso
+                    </button>
+                </div>
+                
+                <!-- TAB PERFIL -->
+                <div id="tab-perfil" class="tab-content active">
+                    <!-- Foto de Perfil Premium -->
+                    <div class="profile-avatar-section">
+                        <div class="avatar-wrapper">
+                            <img id="profile-avatar-preview" src="/images/avatar-default.png" alt="Avatar Preview" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                            <label for="set-photo-file" class="btn-change-avatar" title="Subir foto de perfil">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="set-photo-file" accept="image/*" style="display:none;" onchange="previewAndLoadAvatar(this)">
+                        </div>
+                        <div class="avatar-actions">
+                            <p class="avatar-hint">Sube una imagen o ingresa una URL externa</p>
+                            <input type="text" id="set-foto-url" placeholder="https://ejemplo.com/avatar.jpg" oninput="updateAvatarPreviewFromUrl(this.value)" class="avatar-url-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-signature"></i> Nombre</label>
+                            <input type="text" id="set-nombre" placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-signature"></i> Apellido</label>
+                            <input type="text" id="set-apellido" placeholder="Tu apellido">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-at"></i> Nombre de Usuario</label>
+                        <input type="text" id="set-username" placeholder="Nombre único de usuario">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-compass"></i> Tipo de Viajero</label>
+                        <select id="set-tipo-viajero" class="filter-select select-premium">
+                            <option value="">Selecciona tu estilo de viaje...</option>
+                            <option value="Mochilero">🎒 Mochilero (Aventurero & Low-cost)</option>
+                            <option value="Viajero de Lujo">✨ Viajero de Lujo (Experiencias Premium)</option>
+                            <option value="Foodie">🍔 Foodie (Amante de la gastronomía)</option>
+                            <option value="Historiador">🏛️ Historiador (Amante de la cultura y la vieja Cartagena)</option>
+                            <option value="Fotógrafo">📸 Fotógrafo (Cazador de atardeceres y paisajes)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-quote-left"></i> Biografía</label>
+                        <textarea id="set-biografia" placeholder="Cuéntanos un poco sobre ti, qué buscas descubrir en Cartagena..." rows="3" class="textarea-premium"></textarea>
+                    </div>
+
+                    <button class="btn-save-settings btn-save-premium" onclick="guardarPerfil()">
+                        <i class="fas fa-save"></i> Guardar Perfil
+                    </button>
+                </div>
+
+                <!-- TAB SEGURIDAD -->
+                <div id="tab-seguridad" class="tab-content">
+                    <!-- Cambio de Contraseña -->
+                    <div class="settings-section">
+                        <h4><i class="fas fa-key"></i> Actualizar Contraseña</h4>
+                        <div class="form-group">
+                            <label>Contraseña Actual</label>
+                            <input type="password" id="set-pass-old" placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label>Nueva Contraseña</label>
+                            <input type="password" id="set-pass-new" placeholder="••••••••">
+                        </div>
+                        <button class="btn-save-settings" onclick="cambiarPassword()" style="margin-bottom: 24px;">
+                            <i class="fas fa-lock"></i> Actualizar Contraseña
+                        </button>
+                    </div>
+
+                    <!-- Cambio de Correo Electrónico con Verificación -->
+                    <div class="settings-section border-top">
+                        <h4><i class="fas fa-envelope"></i> Correo Electrónico</h4>
+                        <div class="form-group">
+                            <label>Correo Actual (Solo Lectura)</label>
+                            <input type="email" id="set-email" disabled style="opacity:0.6;">
+                        </div>
+                        <div class="form-group">
+                            <label>Nuevo Correo Electrónico</label>
+                            <div class="email-input-wrapper">
+                                <input type="email" id="set-email-edit" placeholder="nuevo-correo@ejemplo.com">
+                                <button class="btn-action-outline" onclick="iniciarVerificacionCorreo()">
+                                    <i class="fas fa-paper-plane"></i> Verificar
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Modal o alerta de verificación de correo -->
+                        <div id="verificacion-correo-container" class="verificacion-box hidden">
+                            <p class="verif-info"><i class="fas fa-info-circle"></i> Hemos enviado un correo de prueba a su nueva dirección para verificar su validez. Ingrese el código recibido:</p>
+                            <div class="verification-code-row">
+                                <input type="text" id="set-email-code" placeholder="Código de 6 dígitos" maxlength="6">
+                                <button class="btn-action-filled" onclick="confirmarCambioCorreo()">Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cuentas Vinculadas Google OAuth2 -->
+                    <div class="settings-section border-top">
+                        <h4><i class="fas fa-share-nodes"></i> Cuentas Vinculadas</h4>
+                        <div class="oauth-connection-card">
+                            <div class="oauth-provider-info">
+                                <i class="fab fa-google google-icon-large"></i>
+                                <div>
+                                    <span class="provider-title">Google OAuth2</span>
+                                    <span id="oauth-google-status" class="provider-status text-muted">No vinculado</span>
+                                </div>
+                            </div>
+                            <button id="btn-oauth-google" class="btn-action-outline" onclick="toggleGoogleConnection()">
+                                Vincular
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ZONA DE PELIGRO -->
+                    <div class="settings-section border-top danger-zone">
+                        <h4><i class="fas fa-triangle-exclamation"></i> Zona de Peligro</h4>
+                        <p class="danger-desc">Una vez que elimines tu cuenta, no hay marcha atrás. Se borrarán tus comercios, favoritos y reseñas permanentemente.</p>
+                        <button class="btn-danger-premium" onclick="eliminarMiCuentaPropia()">
+                            <i class="fas fa-trash-can"></i> Eliminar Cuenta Permanentemente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <!-- LEAFLET ROUTING MACHINE -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script defer src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const zonasData = /*[[${zonas}]]*/[];
+        /*]]>*/
+    </script>
+
+    <!-- PREMIUM CONFIRMATION MODAL -->
+    <div id="confirmacionModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); transition: all 0.3s ease;" class="hidden">
+        <div style="max-width: 420px; width: 90%; border: 1px solid rgba(255,255,255,0.15); background: rgba(10, 25, 41, 0.95); color: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="font-size: 3rem; color: #e07a5f; margin-bottom: 15px;">
+                <i id="confirmacionIcono" class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2 id="confirmacionTitulo" style="margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 700; color: #fff;">¿Confirmar Acción?</h2>
+            <p id="confirmacionMensaje" style="font-size: 0.95rem; line-height: 1.5; color: rgba(255, 255, 255, 0.8); margin: 0 0 25px 0;">¿Estás seguro de que deseas continuar?</p>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button onclick="cerrarConfirmacionModal()" style="background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Cancelar</button>
+                <button id="btnAceptarConfirmacion" style="background: linear-gradient(135deg, #e07a5f, #c96449); border: none; color: #fff; border-radius: 8px; padding: 10px 24px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREMIUM PROMPT MODAL -->
+    <div id="promptModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); transition: all 0.3s ease;" class="hidden">
+        <div style="max-width: 420px; width: 90%; border: 1px solid rgba(255,255,255,0.15); background: rgba(10, 25, 41, 0.95); color: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="font-size: 3rem; color: #e07a5f; margin-bottom: 15px;">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h2 id="promptTitulo" style="margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 700; color: #fff;">Confirmación Requerida</h2>
+            <p id="promptMensaje" style="font-size: 0.95rem; line-height: 1.5; color: rgba(255, 255, 255, 0.8); margin: 0 0 20px 0;">Por favor escribe la palabra para confirmar:</p>
+            <input type="text" id="promptInput" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; font-size: 1rem; text-align: center; margin-bottom: 24px; box-sizing: border-box;" placeholder="...">
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button onclick="cerrarPromptModal()" style="background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Cancelar</button>
+                <button id="btnAceptarPrompt" style="background: linear-gradient(135deg, #e07a5f, #c96449); border: none; color: #fff; border-radius: 8px; padding: 10px 24px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/index.js}"></script>
+</body>
+
+</html>
+

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Control de Promociones',
+    activeSection='promociones',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div class="welcome-banner">
+            <h1>Moderación de <span style="color:var(--gold);">Promociones</span></h1>
+            <p>Supervisa las ofertas vigentes y desactiva aquellas que no cumplan las reglas.</p>
+        </div>
+
+        <div class="table-container">
+            <div id="promociones-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Analizando promociones activas...</p>
+            </div>
+        </div>
+        <div id="promociones-pagination"></div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPromociones();
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Planes populares en Cartagena de Indias — Itinerarios diseñados para descubrir la ciudad vieja con GO CARTACHO">
+    <title>GO CARTACHO — Planes Populares</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/planes.css}">
+</head>
+
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <a class="logo" th:href="@{/}">
+            <img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo" class="logo-img"> <span
+                class="logo-text">GOCARTACHO</span>
+        </a>
+        <div class="nav-links">
+            <a th:href="@{/mapa}"><i class="fas fa-map"></i> Mapa</a>
+            <a th:href="@{/planes}" class="active"><i class="fas fa-route"></i> Planes</a>
+            <a href="/login" id="btn-login-nav"><i class="fas fa-user-circle"></i> Ingresar</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-eyebrow">
+            <i class="fas fa-route"></i> Itinerarios curados
+        </div>
+        <h1>Planes <em>populares</em></h1>
+        <p>Caminos diseñados con base en la experiencia de quienes ya exploraron la ciudad amurallada. Cada parada, un
+            descubrimiento.</p>
+    </header>
+
+    <main class="container" id="planes-main">
+
+        <div th:if="${planes.empty}" class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <p>Todavía no hay planes publicadas.<br>Vuelve pronto, la ciudad se está preparando.</p>
+        </div>
+
+        <div th:each="plan : ${planes}" class="plan-card" th:id="'plan-' + ${plan.planId}">
+            <img th:src="${plan.nombrePlan.contains('Colonial') || plan.nombrePlan.contains('Clásica') ? 'https://cdn.yate.co/img/blog/2023/1/plaza-santo-domingo-ctg-0psx640.jpg' : 
+                          (plan.nombrePlan.contains('Getsemaní') ? 'https://cdn.yate.co/img/blog/2023/1/getsemani-cartagena-zopx640.jpg' : 
+                          (plan.nombrePlan.contains('Sabores') || plan.nombrePlan.contains('Caribe') ? 'https://cdn.yate.co/img/blog/2023/1/cafe-del-mar-u4ox640.jpg' : 
+                          (plan.nombrePlan.contains('Compras') ? 'https://cdn.yate.co/img/blog/2023/1/carruaje-av5x640.jpg' : 
+                          (plan.nombrePlan.contains('Atardeceres') || plan.nombrePlan.contains('Vida Nocturna') ? 'https://cdn.yate.co/img/blog/2023/1/yate-de-noche-ctg-pntx640.jpg' : 
+                          'https://cdn.yate.co/img/blog/2023/1/imagen-ppal-3dcx640.jpg'))))}"
+                th:alt="${plan.nombrePlan}" class="plan-card-img"
+                style="width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid rgba(196,113,74,0.15);" />
+            <div class="plan-header">
+                <div class="plan-header-info">
+                    <div class="plan-tag"><i class="fas fa-map-pin"></i> Plan</div>
+                    <h3 th:text="${plan.nombrePlan}">Nombre del Plan</h3>
+                </div>
+                <div class="plan-icon">
+                    <i class="fas fa-walking"></i>
+                </div>
+            </div>
+            <div class="plan-body">
+                <p class="plan-desc" th:text="${plan.descripcion}" th:id="'desc-' + ${plan.planId}">Descripción del
+                    plan...</p>
+                <a href="javascript:void(0)" class="btn-ver-mas" th:data-plan-id="${plan.planId}"
+                    onclick="toggleDesc(this.getAttribute('data-plan-id'), this)">Ver más</a>
+                <div class="plan-actions">
+                    <button class="btn-ver" th:id="'btn-plan-' + ${plan.planId}" th:data-plan-id="${plan.planId}"
+                        onclick="verComercios(this.getAttribute('data-plan-id'))">
+                        <i class="fas fa-compass"></i> Ver paradas
+                    </button>
+                </div>
+                <div th:id="'comercios-plan-' + ${plan.planId}" class="comercios-container">
+                    <p class="paradas-titulo"><i class="fas fa-map-signs"></i> Paradas en este plan</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script th:src="@{/js/planes.js}"></script>
+    <script>
+        function toggleDesc(planId, btn) {
+            const desc = document.getElementById('desc-' + planId);
+            if (desc.style.webkitLineClamp === 'unset') {
+                desc.style.webkitLineClamp = '2';
+                btn.textContent = 'Ver más';
+            } else {
+                desc.style.webkitLineClamp = 'unset';
+                btn.textContent = 'Ver menos';
+            }
+        }
+    </script>
+</body>
+
+</html>

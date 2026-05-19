@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Resumen',
+    activeSection='resumen',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+            <h2 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); letter-spacing: -0.2px;">Métricas Clave</h2>
+            <div style="font-size:0.85rem; color:var(--text-secondary); font-weight:700;"><i class="far fa-calendar-alt" style="margin-right:6px; color:var(--primary-blue);"></i> <span id="current-date">Cargando fecha...</span></div>
+        </div>
+
+        <!-- 4 metrics grid (DealDeck Quad Grid) -->
+        <div class="stats-grid">
+            <!-- 1. Comercios (Vibrant blue highlighted card) -->
+            <div class="stat-card card-shops">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Total Comercios</span>
+                    <div class="stat-icon"><i class="fas fa-store"></i></div>
+                </div>
+                <div class="stat-card-footer">
+                    <div class="stat-info">
+                        <h3 th:text="${totalComercios}">0</h3>
+                        <p>Establecimientos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Usuarios -->
+            <div class="stat-card card-users">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Total Usuarios</span>
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="stat-card-footer">
+                    <div class="stat-info">
+                        <h3 th:text="${totalUsuarios}">0</h3>
+                        <p>Exploradores activos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Cupones -->
+            <div class="stat-card card-promos">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Cupones y Ofertas</span>
+                    <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                </div>
+                <div class="stat-card-footer">
+                    <div class="stat-info">
+                        <h3 th:text="${totalPromociones}">0</h3>
+                        <p>Promociones vigentes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Reseñas -->
+            <div class="stat-card card-reviews">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Reseñas Publicadas</span>
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                </div>
+                <div class="stat-card-footer">
+                    <div class="stat-info">
+                        <h3 th:text="${totalResenas}">0</h3>
+                        <p>Opiniones de usuarios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two-column SaaS Dashboard Layout Grid -->
+        <div class="dashboard-layout-grid">
+            <!-- Left Column: Big Activity chart -->
+            <div class="dashboard-panel-card" style="min-height: 480px;">
+                <div class="panel-card-header">
+                    <div>
+                        <h3>Actividad en GoCartacho</h3>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">Cantidad de establecimientos registrados por categoría</p>
+                    </div>
+                    <select class="panel-card-select">
+                        <option>Últimos 30 días</option>
+                        <option>Últimos 6 meses</option>
+                        <option>Histórico</option>
+                    </select>
+                </div>
+                <div style="flex: 1; position: relative; min-height: 380px; width: 100%; overflow: hidden; border-radius: 12px; margin-top: 10px;">
+                    <div style="width: 100%; height: 100%;">
+                        <canvas id="chart-categorias"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Vertical stack of doughnut/pie charts -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+                <!-- Doughnut Chart (Zonas) -->
+                <div class="dashboard-panel-card" style="min-height: 203px; flex: 1;">
+                    <div class="panel-card-header" style="margin-bottom: 12px;">
+                        <h3>Distribución por Zona</h3>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Presencia comercial en Cartagena</p>
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; min-height: 120px;">
+                        <canvas id="chart-zonas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pie Chart (Estados) -->
+                <div class="dashboard-panel-card" style="min-height: 203px; flex: 1;">
+                    <div class="panel-card-header" style="margin-bottom: 12px;">
+                        <h3>Solicitudes y Estados</h3>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Estado de aprobación de comercios</p>
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; min-height: 120px;">
+                        <canvas id="chart-estados"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            
+            const dateSpan = document.getElementById('current-date');
+            if (dateSpan) {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                let dateStr = new Date().toLocaleDateString('es-ES', options);
+                dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+                dateSpan.innerText = dateStr;
+            }
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Gestión de Negocios',
+    activeSection='negocios',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div class="welcome-banner">
+            <h1>Gestión de <span style="color:var(--green);">Negocios</span></h1>
+            <p>Aprueba nuevas solicitudes o administra comercios existentes.</p>
+        </div>
+
+        <!-- PENDIENTES -->
+        <h3 style="color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+            <i class="fas fa-hourglass-half"></i> Pendientes de Revisión
+        </h3>
+        <form onsubmit="loadPendientes(0); return false;" class="search-form">
+            <input type="text" id="search-pendientes" placeholder="Buscar por nombre...">
+            <button type="submit" class="btn-primary">Filtrar</button>
+        </form>
+        <div class="table-container">
+            <div id="pendientes-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Cargando solicitudes...</p>
+            </div>
+        </div>
+        <div id="pendientes-pagination"></div>
+
+        <div style="margin-top: 60px;"></div>
+
+        <!-- ACTIVOS -->
+        <h3 style="color:var(--green); margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+            <i class="fas fa-check-circle"></i> Negocios Publicados
+        </h3>
+        <form onsubmit="loadActivos(0); return false;" class="search-form">
+            <input type="text" id="search-activos" placeholder="Filtrar activos...">
+            <button type="submit" class="btn-primary">Buscar</button>
+        </form>
+        <div class="table-container">
+            <div id="activos-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Sincronizando con base de datos...</p>
+            </div>
+        </div>
+        <div id="activos-pagination"></div>
+
+        <!-- MODAL EDICION (ESPECIFICO DE ESTA SECCION) -->
+        <div id="modal-editar-negocio" class="modal-overlay hidden">
+            <div class="modal-content" style="max-width: 800px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
+                    <h2 style="margin:0;"><i class="fas fa-edit" style="color:var(--accent2);"></i> Editar Negocio</h2>
+                    <button onclick="cerrarModalEditar()" style="background:none; border:none; color:var(--text); font-size:1.8rem; cursor:pointer; opacity:0.6;">&times;</button>
+                </div>
+                <form id="form-editar-negocio" onsubmit="guardarEdicionNegocio(event)">
+                    <input type="hidden" id="edit-id">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="search-form" style="grid-column: span 2; flex-direction:column; margin:0;">
+                            <label>Nombre del Establecimiento</label>
+                            <input type="text" id="edit-nombre" required>
+                        </div>
+                        <div class="search-form" style="flex-direction:column; margin:0;">
+                            <label>Tipo de Negocio</label>
+                            <select id="edit-tipo" style="background:rgba(255,255,255,0.7); border:1px solid var(--border); padding:16px; border-radius:12px; color:var(--text); font-size:0.95rem;">
+                                <option th:each="tipo : ${tiposNegocio}" 
+                                        th:value="${tipo.id}" 
+                                        th:text="${tipo.nombre}"
+                                        style="color:var(--text); background:#fff;">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="search-form" style="flex-direction:column; margin:0;">
+                            <label>Dirección</label>
+                            <input type="text" id="edit-direccion">
+                        </div>
+                        <div class="search-form" style="flex-direction:column; margin:0;">
+                            <label>Teléfono</label>
+                            <input type="text" id="edit-telefono">
+                        </div>
+                        <div class="search-form" style="flex-direction:column; margin:0;">
+                            <label>Email de Contacto</label>
+                            <input type="email" id="edit-email">
+                        </div>
+                        <div class="search-form" style="grid-column: span 2; flex-direction:column; margin:0;">
+                            <label>Descripción del Servicio</label>
+                            <textarea id="edit-descripcion" style="background:rgba(255,255,255,0.7); border:1px solid var(--border); padding:16px; border-radius:12px; color:var(--text); font-size:0.95rem; width:100%; height:120px; resize:none;"></textarea>
+                        </div>
+                    </div>
+                    <div style="margin-top:30px; display:flex; gap:15px; justify-content: flex-end;">
+                        <button type="button" onclick="cerrarModalEditar()" class="btn-action" style="background:rgba(0,0,0,0.05); color:var(--text); border:1px solid var(--border); padding:12px 24px; border-radius:var(--radius-sm); font-weight:600; cursor:pointer; transition:all 0.3s;">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPendientes(0);
+            loadActivos(0);
+            loadInactivos(0);
+        });
+    </script>
+</body>
+</html>
+
+

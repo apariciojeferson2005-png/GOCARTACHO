@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout-admin :: layout-admin(
+    pageTitle='Auditoría del Sistema',
+    activeSection='auditoria',
+    content=~{::section},
+    script=~{::script}
+)}">
+<body>
+    <section>
+        <div class="welcome-banner">
+            <h1>Registro de <span style="color:var(--accent2);">Auditoría</span></h1>
+            <p>Historial completo de acciones administrativas para garantizar la transparencia.</p>
+        </div>
+
+        <div class="table-container">
+            <div id="auditoria-container">
+                <p style="text-align:center; padding:40px; color:var(--muted);">Recuperando historial de eventos...</p>
+            </div>
+        </div>
+        <div id="auditoria-pagination"></div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAuditoria(0);
+        });
+    </script>
+</body>
+</html>
+
+

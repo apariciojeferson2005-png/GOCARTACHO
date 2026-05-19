@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+
+<body>
+    <div class="register-card">
+        <div class="register-brand">
+            <img th:src="@{/images/Logo_GC.png}" alt="Logo GC" style="width: 50px; margin-bottom: 10px;">
+            <h1><span style="color: var(--text);">Go</span> <span style="color: var(--naranja-ciudad);">Cartacho</span>
+            </h1>
+            <p class="register-subtitle">Únete a GO CARTACHO y explora Cartagena</p>
+        </div>
+        <div id="error-message" class="error-msg"></div>
+        <div id="success-message" class="success-msg">¡Registro exitoso! <a href="/login">Inicia sesión</a></div>
+
+        <a href="/oauth2/authorization/google" class="btn-google"
+            style="display:flex; align-items:center; justify-content:center; gap:12px; width:100%; padding:14px; background:white; border:1px solid rgba(0,0,0,0.1); border-radius:8px; color:#333; text-decoration:none; font-weight:600; font-size:0.95rem; margin-bottom:20px;">
+            <i class="fab fa-google" style="color:#DB4437;"></i> Registrarse con Google
+        </a>
+
+        <div class="divider"
+            style="display:flex; align-items:center; gap:12px; margin:20px 0; color:#999; font-size:0.8rem;">
+            <span style="flex:1; height:1px; background:#eee;"></span>
+            o crea una cuenta manual
+            <span style="flex:1; height:1px; background:#eee;"></span>
+        </div>
+
+        <form id="registerForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 15px;">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" required placeholder="Ej: Juan">
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" required placeholder="Ej: Pérez">
+            </div>
+            <div class="form-group">
+                <label for="username">Nombre de usuario</label>
+                <div style="position: relative;">
+                    <i class="fas fa-at"
+                        style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    <input type="text" id="username" required placeholder="juan.perez" style="padding-left: 35px;">
+                </div>
+                <small style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px; display: block;">Será
+                    público en reseñas.</small>
+            </div>
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" required placeholder="••••••••" minlength="6">
+            </div>
+            <button type="submit" class="btn-submit" style="grid-column: 1 / -1; margin-top: 8px;">Registrarse</button>
+        </form>
+
+        <div class="links">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></div>
+        <div class="back-link"><a href="/"><i class="fas fa-arrow-left"></i> Volver al mapa</a></div>
+        <p class="privacy-note">Al registrarte aceptas nuestra <a href="/privacidad">política de privacidad</a></p>
+    </div>
+
+    <script th:src="@{/js/register.js}"></script>
+</body>
+
+</html>

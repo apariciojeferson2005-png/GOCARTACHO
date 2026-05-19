@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Clave secreta usada para firmar y verificar los tokens JWT. Debe establecerse mediante la variable de entorno JWT_SECRET. Mínimo 256 bits (32 caracteres)."
+    }
+  ]
+}

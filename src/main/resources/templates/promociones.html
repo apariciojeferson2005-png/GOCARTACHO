@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promociones - GO CARTACHO</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 20px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 992px) {
+            .promo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .promo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .promo-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .promo-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .promo-card h2 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+
+        .promo-card .comercio-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .promo-desc {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mas {
+            display: inline-block;
+            color: var(--naranja-brillante, #FF9800);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mas:hover {
+            color: var(--naranja-ciudad, #FF3D00);
+            text-decoration: underline;
+        }
+
+        .promo-desc {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mas {
+            display: inline-block;
+            color: var(--naranja-brillante, #FF9800);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mas:hover {
+            color: var(--naranja-ciudad, #FF3D00);
+            text-decoration: underline;
+        }
+
+        .promo-card .vigencia {
+            font-size: 0.8rem;
+            margin-top: auto;
+            display: block;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            padding-bottom: 5px;
+        }
+
+        .badge-descuento {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 0 20px;
+        }
+
+        .header-section {
+            margin-bottom: 30px;
+        }
+
+        .header-section h1 {
+            font-size: 2rem;
+            color: var(--text);
+        }
+
+        .empty-promos {
+            text-align: center;
+            padding: 100px 0;
+            opacity: 0.5;
+        }
+
+        .empty-promos i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- ANIMACIÓN LOADING TEMATIZADA --- */
+        @keyframes pulseLoading {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.85;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                filter: drop-shadow(0 0 12px rgba(0, 158, 227, 0.6));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/'"><img th:src="@{/images/Logo_GC.png}" alt="Go Cartacho Logo"
+                class="logo-img"> <span class="logo-text">GOCARTACHO</span></div>
+        <div class="nav-links">
+            <a th:href="@{/}"><i class="fas fa-globe"></i> <span>Explorar</span></a>
+            <a th:href="@{/promociones}" class="active"><i class="fas fa-tag"></i> <span>Promociones</span></a>
+            <a th:href="@{/planes}"><i class="fas fa-route"></i> <span>Planes</span></a>
+            <a href="/login" id="btn-login" class="btn-login-nav hidden"><i class="fas fa-user"></i>
+                <span>Ingresar</span></a>
+            <a href="#" id="btn-logout" class="hidden" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span
+                    id="username-display"></span></a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="header-section">
+            <h1><i class="fas fa-gift" style="color:var(--accent2);"></i> Ofertas del Día</h1>
+            <p>Descubre los mejores descuentos en los locales más populares de Cartagena.</p>
+        </div>
+
+        <div id="muro-promociones" class="promo-grid">
+            <!-- Cargando... -->
+        </div>
+    </div>
+
+    <script th:src="@{/js/index.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gestionarBotones();
+            cargarMuroPromociones();
+        });
+
+        function cargarMuroPromociones() {
+            const muro = document.getElementById('muro-promociones');
+            muro.innerHTML = `
+                <div class="empty-promos" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; grid-column: 1 / -1; padding: 80px 20px; opacity: 1;">
+                    <img src="/images/Cargando_GC.png" alt="Cargando..." style="width: 85px; height: auto; animation: pulseLoading 1.5s infinite ease-in-out; filter: drop-shadow(0 0 8px rgba(0, 158, 227, 0.4));">
+                    <p style="margin-top: 15px; font-weight: 600; color: var(--accent2); font-size: 0.95rem; letter-spacing: 1px;">BUSCANDO LAS MEJORES OFERTAS...</p>
+                </div>
+            `;
+
+            fetch('/api/v1/promociones/activas')
+                .then(r => r.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        muro.innerHTML = '<div class="empty-promos"><i class="fas fa-ticket-alt"></i><p>No hay promociones activas en este momento.<br>¡Vuelve pronto!</p></div>';
+                        return;
+                    }
+
+                    muro.innerHTML = '';
+                    data.forEach(p => {
+                        const card = document.createElement('div');
+                        card.className = 'promo-card';
+
+                        const desc = p.descripcion ? `
+                            <p class="promo-desc" id="promo-desc-${p.promocionId}">${p.descripcion}</p>
+                            <a href="javascript:void(0)" class="btn-ver-mas" onclick="togglePromoDesc(${p.promocionId}, this)">Ver más</a>
+                        ` : '';
+                        const descVal = p.porcentajeDescuento ? `<div class="badge-descuento">-${p.porcentajeDescuento}%</div>` : '';
+                        const comercio = p.comercioNombre || 'Negocio Local';
+
+                        const indexImg = Math.abs(p.titulo.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 11;
+                        const listImgs = [
+                            "https://cdn.yate.co/img/blog/2023/1/plaza-santo-domingo-ctg-0psx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/getsemani-cartagena-zopx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/51-sky-bar-lv8x640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/yate-de-noche-ctg-pntx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/cafe-del-mar-u4ox640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/-wk8x640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/-3zhx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/muralla-cartagena-2uhx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/chiva-rumbera-kfcx640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/carruaje-av5x640.jpg",
+                            "https://cdn.yate.co/img/blog/2023/1/imagen-ppal-3dcx640.jpg"
+                        ];
+
+                        card.innerHTML = `
+                            ${descVal}
+                            <img src="${listImgs[indexImg]}" alt="${p.titulo}" class="promo-card-img" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;" />
+                            <span class="comercio-name">${comercio}</span>
+                            <h2>${p.titulo}</h2>
+                            ${desc}
+                            <span class="vigencia">
+                                <i class="far fa-calendar-alt"></i> Expira: ${p.fechaFin ? new Date(p.fechaFin).toLocaleDateString() : 'N/A'}
+                            </span>
+                            <button onclick="verEnMapa(${p.latitud}, ${p.longitud}, '${p.comercioId || ''}', ${p.zonaNumero || 'null'})" style="margin-top:15px; width:100%; padding:10px; border-radius:8px; border:none; background:var(--accent2); color:white; font-weight:600; cursor:pointer;">
+                                <i class="fas fa-map-marker-alt"></i> Ver ubicación
+                            </button>
+                        `;
+                        muro.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    muro.innerHTML = '<div class="empty-promos"><i class="fas fa-exclamation-circle"></i><p>Error al conectar con el servidor.</p></div>';
+                });
+        }
+
+        function verEnMapa(lat, lng, comercioId, zonaNumero) {
+            window.location.href = `/?lat=${lat}&lng=${lng}&comercioId=${comercioId}&zonaNumero=${zonaNumero}`;
+        }
+
+        function togglePromoDesc(promoId, btn) {
+            const desc = document.getElementById('promo-desc-' + promoId);
+            if (desc.style.webkitLineClamp === 'unset') {
+                desc.style.webkitLineClamp = '2';
+                btn.textContent = 'Ver más';
+            } else {
+                desc.style.webkitLineClamp = 'unset';
+                btn.textContent = 'Ver menos';
+            }
+        }
+    </script>
+</body>
+
+</html>

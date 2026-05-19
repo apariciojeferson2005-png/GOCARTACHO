@@ -1,0 +1,184 @@
+/* =============================================================
+   GOCARTACHO — Guía de Marca "Cartagena"
+   ============================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+    /* --- Paleta de Colores Principales (Marca Gocartacho - Logo) --- */
+    --turquesa-caribe: #009EE3;
+    /* Cyan vibrante (G) */
+    --azul-marino: #004B73;
+    /* Azul profundo (para texto) */
+    --naranja-ciudad: #FF3D00;
+    /* Rojo/Naranja vibrante (Parte superior) */
+    --naranja-brillante: #FF9800;
+    /* Naranja cálido */
+    --amarillo-solar: #FFC107;
+    /* Amarillo/Dorado */
+
+    /* --- Colores de Interfaz (Neutros de Soporte) --- */
+    --blanco-arena: #F4F6F7;
+    --blanco-calido: #FFFFFF;
+    --negro-carbon: #1C2833;
+
+    /* Variables obsoletas mantenidas temporalmente por retrocompatibilidad o remapeadas */
+    --terracota: var(--naranja-ciudad);
+    --terracota-suave: var(--naranja-brillante);
+    --terracota-light: var(--blanco-arena);
+    --ocre: var(--amarillo-solar);
+    --ocre-light: #FFF9E6;
+    --blanco-roto: var(--blanco-arena);
+    --azul-caribe: var(--turquesa-caribe);
+    --azul-caribe-suave: #48CAE4;
+    --azul-caribe-light: #E0FBFC;
+    --verde-manglar: #06D6A0;
+    --teja: #A04000;
+    /* Naranja oscuro para hovers */
+    --arena: var(--blanco-arena);
+
+    /* --- Fondos --- */
+    --bg-primary: var(--blanco-arena);
+    --bg-secondary: var(--blanco-calido);
+    --bg-card: #FFFFFF;
+    --bg-warm: #FFF9E6;
+    /* Amarillo muy pálido */
+    --bg-ocean: #E0FBFC;
+
+    /* --- Glassmorphism --- */
+    --bg-glass: rgba(255, 255, 255, 0.65);
+    --bg-glass-light: rgba(255, 255, 255, 0.4);
+    --bg-glass-heavy: rgba(255, 255, 255, 0.90);
+    --glass-blur: blur(20px);
+    --glass-border: rgba(255, 255, 255, 0.8);
+
+    /* --- Texto --- */
+    --text: var(--negro-carbon);
+    --text-muted: var(--azul-marino);
+    /* Legibilidad superior */
+    --text-light: #7B8A97;
+    /* Gris azulado neutro */
+    --text-oncolor: #FFFFFF;
+
+    /* --- Acento principal --- */
+    --accent: var(--naranja-ciudad);
+    --accent-hover: var(--teja);
+    --accent-light: var(--blanco-arena);
+    --accent-glow: rgba(211, 84, 0, 0.3);
+
+    /* --- Acento secundario (océano) --- */
+    --accent2: var(--turquesa-caribe);
+    --accent2-hover: var(--azul-marino);
+    --accent2-light: #E0FBFC;
+    --accent2-glow: rgba(0, 168, 150, 0.3);
+
+    /* --- Gradients --- */
+    --gradient-primary: linear-gradient(135deg, var(--turquesa-caribe) 0%, var(--naranja-brillante) 100%);
+    --gradient-warm: linear-gradient(135deg, var(--amarillo-solar) 0%, var(--naranja-ciudad) 100%);
+    --gradient-ocean: linear-gradient(135deg, var(--azul-marino) 0%, var(--turquesa-caribe) 100%);
+
+    /* --- Bordes y sombras --- */
+    --border: rgba(28, 40, 51, 0.08);
+    /* Basado en negro carbón */
+    --border-soft: rgba(28, 40, 51, 0.04);
+    --border-glass: rgba(255, 255, 255, 0.8);
+
+    --shadow-sm: 0 4px 12px rgba(28, 40, 51, 0.05);
+    --shadow: 0 12px 32px rgba(28, 40, 51, 0.08);
+    --shadow-md: 0 24px 48px rgba(28, 40, 51, 0.12);
+    --shadow-lg: 0 32px 64px rgba(0, 168, 150, 0.15);
+    /* Sombra turquesa */
+    --shadow-warm: 0 12px 32px rgba(211, 84, 0, 0.25);
+    /* Sombra naranja */
+    --shadow-glow: 0 0 24px rgba(211, 84, 0, 0.4);
+
+    /* --- Tipografía --- */
+    --font-heading: 'Montserrat', sans-serif;
+    /* Títulos — moderna y geométrica */
+    --font-serif: var(--font-heading);
+    /* Remapeado por compatibilidad temporal */
+    --font-sans: 'Inter', sans-serif;
+    /* Cuerpo — optimizada para UI */
+
+    /* --- Forma --- */
+    --radius-sm: 8px;
+    --radius: 14px;
+    --radius-lg: 20px;
+    --radius-pill: 999px;
+
+    /* --- Transiciones --- */
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =============================================================
+   Estilos para el Logo de Imagen (Go Cartacho)
+   ============================================================= */
+.logo-img {
+    height: 72px;
+    /* Altura idónea para la barra de navegación (más grande) */
+    width: auto;
+    /* Mantiene la relación de aspecto de la imagen */
+    object-fit: contain;
+    /* Asegura que no se deforme */
+    display: inline-block;
+    vertical-align: middle;
+    transition: var(--transition-fast);
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.05);
+    /* Efecto sutil al pasar el cursor sobre el logo */
+}
+
+/* =============================================================
+   Elementos Visuales de la Marca (Guía de Marca Gocartacho)
+   ============================================================= */
+.logo-text {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--azul-marino);
+    font-size: 1.1rem;
+    display: inline-block;
+    vertical-align: middle;
+    letter-spacing: -0.02em;
+    margin-left: 8px;
+}
+
+/* Patrón sutil de mapa de calor */
+.bg-heatmap {
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-heatmap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(211, 84, 0, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(0, 168, 150, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(241, 196, 15, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Insignias de Tarjetas Comerciales */
+.badge-verificado {
+    background-color: var(--turquesa-caribe);
+    color: var(--blanco-calido);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-afluencia {
+    background: linear-gradient(135deg, var(--amarillo-solar), var(--naranja-brillante));
+    color: var(--blanco-calido);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
