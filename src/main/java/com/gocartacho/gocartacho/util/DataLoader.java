@@ -32,21 +32,8 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final org.springframework.cache.CacheManager cacheManager;
 
-    @org.springframework.beans.factory.annotation.Value("${app.seeding.enabled:true}")
-    private boolean seedingEnabled;
-
     @Override
     public void run(String... args) throws Exception {
-        if (!seedingEnabled) {
-            log.info("Carga de datos de prueba (seeding) deshabilitada.");
-            // Aseguramos que existan los datos esenciales de configuración
-            inicializarAdminMaestro();
-            inicializarZonas();
-            inicializarTiposNegocio();
-            inicializarPlanes();
-            return;
-        }
-
         log.info("Iniciando carga de datos de prueba...");
 
         // 1. Usuarios (10)
@@ -85,6 +72,9 @@ public class DataLoader implements CommandLineRunner {
         // 10. Migración de reseñas huérfanas
         migrarResenasExistentes();
 
+        // 11. Auto-corrección de zonas huérfanas
+        corregirZonaIdsDeComercios();
+
         // LIMPIAR CACHÉ para que los cambios se vean reflejados
         org.springframework.cache.Cache cacheComercios = cacheManager != null ? cacheManager.getCache("comercios")
                 : null;
@@ -94,21 +84,6 @@ public class DataLoader implements CommandLineRunner {
         }
 
         log.info("Carga de datos de prueba finalizada.");
-    }
-
-    private void inicializarAdminMaestro() {
-        String password = passwordEncoder.encode("password123");
-        if (usuarioRepository.findByUsername("admin").isEmpty()) {
-            log.info("Inicializando administrador maestro...");
-            Usuario admin = new Usuario();
-            admin.setNombre("Admin");
-            admin.setApellido("Master");
-            admin.setUsername("admin");
-            admin.setEmail("admin@gocartacho.com");
-            admin.setContrasena(password);
-            admin.setRol(RolUsuario.SUPER_ADMIN);
-            usuarioRepository.save(admin);
-        }
     }
 
     private void inicializarUsuarios() {
@@ -640,5 +615,57 @@ public class DataLoader implements CommandLineRunner {
         a.setHora(hora);
         a.setNivelPromedio(nivel);
         afluenciaHistoricaRepository.save(a);
+    }
+
+    private void corregirZonaIdsDeComercios() {
+        log.info("Iniciando auto-corrección de zonaId en comercios...");
+        java.util.List<com.gocartacho.gocartacho.model.Zona> zonas = zonaRepository.findAll();
+        if (zonas.isEmpty()) {
+            log.warn("No hay zonas en la base de datos, abortando corrección.");
+            return;
+        }
+
+        java.util.List<com.gocartacho.gocartacho.model.Comercio> comercios = comercioRepository.findAll();
+        int corregidos = 0;
+
+        for (com.gocartacho.gocartacho.model.Comercio c : comercios) {
+            String cZonaId = c.getZonaId();
+            boolean existeZona = cZonaId != null && zonas.stream().anyMatch(z -> z.getZonaId().equals(cZonaId));
+            if (!existeZona) {
+                com.gocartacho.gocartacho.model.Zona zonaMasCercana = null;
+                double minDistance = Double.MAX_VALUE;
+                
+                if (c.getLatitud() != null && c.getLongitud() != null) {
+                    double cLat = c.getLatitud().doubleValue();
+                    double cLng = c.getLongitud().doubleValue();
+                    
+                    for (com.gocartacho.gocartacho.model.Zona z : zonas) {
+                        if (z.getLatitud() != null && z.getLongitud() != null) {
+                            double zLat = z.getLatitud().doubleValue();
+                            double zLng = z.getLongitud().doubleValue();
+                            double dist = Math.pow(cLat - zLat, 2) + Math.pow(cLng - zLng, 2);
+                            if (dist < minDistance) {
+                                minDistance = dist;
+                                zonaMasCercana = z;
+                            }
+                        }
+                    }
+                }
+                
+                if (zonaMasCercana == null && !zonas.isEmpty()) {
+                    zonaMasCercana = zonas.get(0);
+                }
+                
+                if (zonaMasCercana != null) {
+                    c.setZonaId(zonaMasCercana.getZonaId());
+                    if (c.getUbicacion() == null && c.getLatitud() != null && c.getLongitud() != null) {
+                        c.setUbicacion(new org.springframework.data.mongodb.core.geo.GeoJsonPoint(c.getLongitud().doubleValue(), c.getLatitud().doubleValue()));
+                    }
+                    comercioRepository.save(c);
+                    corregidos++;
+                }
+            }
+        }
+        log.info("Auto-corrección de zonas finalizada. Comercios re-asociados: {}/{}", corregidos, comercios.size());
     }
 }
