@@ -25,10 +25,10 @@ public class Favorito implements Serializable {
     @Id
     private String id;
 
-    @Field(name = "usuario_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
+    @Field("usuario_id")
     private String usuarioId;
 
-    @Field(name = "comercio_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
+    @Field("comercio_id")
     private String comercioId;
 
     @Field("fecha_agregado")

@@ -43,6 +43,6 @@ public class Promocion implements Serializable {
     private Boolean activa = true;
 
     // --- Relación con Comercio (Referencia) ---
-    @Field(name = "comercio_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
+    @Field("comercio_id")
     private String comercioId;
 }

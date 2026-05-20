@@ -30,10 +30,10 @@ public class Resena implements Serializable {
     private LocalDateTime fecha;
 
     // Relaciones lógicas (NoSQL) con las entidades
-    @Field(name = "usuario_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
+    @Field("usuario_id")
     private String usuarioId;
 
-    @Field(name = "comercio_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
+    @Field("comercio_id")
     @Indexed
     private String comercioId;
 
