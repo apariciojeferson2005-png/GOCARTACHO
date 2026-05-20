@@ -92,8 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const usuario = user.usuario || {};
-        if (usuario.usuarioId) {
-            verificarNegocioExistente(usuario.usuarioId);
+        const uid = usuario.usuarioId || usuario.id;
+        if (uid) {
+            verificarNegocioExistente(uid);
             cargarNotificaciones();
         }
 
@@ -169,7 +170,7 @@ function cargarNotificaciones() {
                         const card = document.createElement('div');
                         card.className = 'notif-card';
                         card.style.cssText = `position: relative; padding: 20px; border-radius: 12px; margin-bottom: 16px; border-left: 5px solid ${n.leida ? '#cbd5e1' : 'var(--terracota)'}; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid var(--border); border-left-width: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); transition: all 0.3s ease;`;
-                        
+
                         card.innerHTML = `
                             <button onclick="eliminarNotificacion('${n.id || n.notificacionId}', this)" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 5px; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">
                                 <i class="fas fa-times"></i>
@@ -223,23 +224,23 @@ function marcarLeidaUI(notifId, btnElement) {
     fetchWithAuth(`/api/v1/notificaciones/${notifId}/leer`, {
         method: 'PATCH'
     })
-    .then(r => {
-        if (r.ok) {
-            cargarNotificaciones();
-        } else {
-            alert("No se pudo marcar como leída.");
-        }
-    })
-    .catch(err => {
-        console.error("Error al marcar como leída:", err);
-    });
+        .then(r => {
+            if (r.ok) {
+                cargarNotificaciones();
+            } else {
+                alert("No se pudo marcar como leída.");
+            }
+        })
+        .catch(err => {
+            console.error("Error al marcar como leída:", err);
+        });
 }
 
 function eliminarNotificacion(notifId, btnElement) {
     mostrarConfirmacion('Eliminar Notificación', '¿Deseas eliminar permanentemente esta notificación de tu bandeja?', 'fa-bell-slash')
         .then(confirmado => {
             if (!confirmado) return;
-            
+
             // Encontrar el elemento de la tarjeta
             const card = btnElement.closest('.notif-card') || btnElement.closest('div[style*="border-left"]');
             if (card) {
@@ -251,32 +252,32 @@ function eliminarNotificacion(notifId, btnElement) {
             fetchWithAuth(`/api/v1/notificaciones/${notifId}`, {
                 method: 'DELETE'
             })
-            .then(r => {
-                if (r.ok) {
-                    if (card) card.remove();
-                    cargarNotificaciones();
-                } else {
+                .then(r => {
+                    if (r.ok) {
+                        if (card) card.remove();
+                        cargarNotificaciones();
+                    } else {
+                        if (card) {
+                            card.style.opacity = '1';
+                            card.style.transform = 'none';
+                        }
+                        alert("No se pudo eliminar la notificación.");
+                    }
+                })
+                .catch(err => {
                     if (card) {
                         card.style.opacity = '1';
                         card.style.transform = 'none';
                     }
-                    alert("No se pudo eliminar la notificación.");
-                }
-            })
-            .catch(err => {
-                if (card) {
-                    card.style.opacity = '1';
-                    card.style.transform = 'none';
-                }
-                console.error("Error al eliminar notificación:", err);
-            });
+                    console.error("Error al eliminar notificación:", err);
+                });
         });
 }
 
 async function logout() {
     await fetchWithAuth('/api/v1/auth/logout', {
         method: 'POST'
-    }).catch(() => {});
+    }).catch(() => { });
     localStorage.removeItem('usuario_gocartacho');
     window.location.href = '/login';
 }
@@ -467,10 +468,10 @@ function mostrarNegocioExistente(negocio) {
         document.body.classList.add('merchant-portal-fullscreen');
         formContainer.style.display = 'none';
         container.style.display = 'none'; // Quitar card de negocio del top ya que está en el panel
-        
+
         const topNotif = document.getElementById('notificaciones-container');
         if (topNotif) topNotif.style.display = 'none'; // Quitar card de notificaciones del top ya que está en el panel
-        
+
         // Rellenar formulario oculto para poder editarlo
         precargarDatosFormulario(negocio);
 
@@ -743,7 +744,7 @@ function switchMerchantSection(sectionId, element) {
     const targetSection = document.getElementById(`msec-${sectionId}`);
     if (targetSection) {
         targetSection.classList.add('active');
-        
+
         // Si se entra a la sección de edición de perfil, refrescar Leaflet ya que ahora es visible
         if (sectionId === 'editar-perfil') {
             setTimeout(() => {
@@ -783,7 +784,7 @@ function precargarDatosFormulario(negocio) {
 function activarEdicionPerfil() {
     document.getElementById('dashboard-comerciante').style.display = 'none';
     document.getElementById('form-comercio-container').style.display = 'block';
-    
+
     // Forzar actualización del mapa picker ya que ahora es visible
     setTimeout(() => {
         if (mapPicker) {
@@ -801,11 +802,11 @@ function cancelarEdicionPerfil() {
 function renderPromocionesList(promos) {
     const listDiv = document.getElementById('lista-promociones-manager');
     const badge = document.getElementById('promo-count-badge');
-    
+
     if (badge) {
         badge.textContent = promos ? promos.length : '0';
     }
-    
+
     if (!promos || promos.length === 0) {
         listDiv.innerHTML = `<div class="empty-state"><i class="fas fa-tag"></i> No tienes promociones publicadas. Ve a la pestaña "Crear Promoción" para publicar una.</div>`;
         return;
@@ -841,17 +842,18 @@ function eliminarPromocionDashboard(promoId) {
             fetchWithAuth(`/api/v1/promociones/${promoId}`, {
                 method: 'DELETE'
             })
-            .then(r => {
-                if (!r.ok && r.status !== 204) {
-                    throw new Error("No se pudo desactivar la promoción.");
-                }
-                alert("Promoción desactivada exitosamente.");
-                // Volver a cargar unificado
-                verificarNegocioExistente(JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario.usuarioId);
-            })
-            .catch(err => {
-                alert(err.message);
-            });
+                .then(r => {
+                    if (!r.ok && r.status !== 204) {
+                        throw new Error("No se pudo desactivar la promoción.");
+                    }
+                    alert("Promoción desactivada exitosamente.");
+                    // Volver a cargar unificado
+                    const usr = JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario;
+                    verificarNegocioExistente(usr.usuarioId || usr.id);
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
         });
 }
 
@@ -866,7 +868,7 @@ function renderReviewsFeed(reviews) {
 
     listDiv.innerHTML = '';
     reviews.forEach(r => {
-        const starsHtml = Array.from({ length: 5 }, (_, i) => 
+        const starsHtml = Array.from({ length: 5 }, (_, i) =>
             `<i class="${i < r.calificacion ? 'fas' : 'far'} fa-star"></i>`
         ).join('');
 
@@ -899,7 +901,7 @@ function initMerchantCharts(negocio, reviews, promos, stats) {
             Math.round(baseTraffic * 1.6),
             Math.round(baseTraffic * 1.0)
         ];
-        
+
         const gradient = ctxTransito.getContext('2d').createLinearGradient(0, 0, 0, 180);
         gradient.addColorStop(0, 'rgba(43, 123, 160, 0.45)');
         gradient.addColorStop(1, 'rgba(43, 123, 160, 0.0)');
@@ -959,14 +961,14 @@ function initMerchantCharts(negocio, reviews, promos, stats) {
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { 
-                    legend: { 
-                        position: 'right', 
-                        labels: { 
-                            color: '#64748b', 
-                            font: { size: 11, weight: 'bold' } 
-                        } 
-                    } 
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#64748b',
+                            font: { size: 11, weight: 'bold' }
+                        }
+                    }
                 },
                 cutout: '65%'
             }
@@ -1074,11 +1076,12 @@ document.getElementById('formNegocio').addEventListener('submit', function (e) {
         })
         .then(data => {
             comercioIdUsuario = data.comercioId || data.id;
-            
+
             if (editandoNegocio) {
                 // Si estaba editando, volver al Dashboard
                 alert("¡Perfil de negocio actualizado exitosamente!");
-                verificarNegocioExistente(JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario.usuarioId);
+                const usr = JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario;
+                verificarNegocioExistente(usr.usuarioId || usr.id);
             } else {
                 mostrarNegocioExistente(data); // Inmediatamente mostrar el estado pendiente
                 window.scrollTo(0, 0);
@@ -1133,9 +1136,10 @@ document.getElementById('formPromocion').addEventListener('submit', function (e)
             successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ¡Promoción "<strong>${escapeHtml(data.titulo)}</strong>" creada exitosamente!`;
             successDiv.style.display = 'block';
             document.getElementById('formPromocion').reset();
-            
+
             // Recargar panel unificado para refrescar métricas, gráficos e histórico de cupones
-            verificarNegocioExistente(JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario.usuarioId);
+            const usr = JSON.parse(localStorage.getItem('usuario_gocartacho')).usuario;
+            verificarNegocioExistente(usr.usuarioId || usr.id);
         })
         .catch(err => {
             errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${err.message}`;
