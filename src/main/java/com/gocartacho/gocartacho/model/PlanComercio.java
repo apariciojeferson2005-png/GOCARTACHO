@@ -22,10 +22,10 @@ public class PlanComercio implements Serializable {
     @Id
     private String id;
 
-    @Field("plan_id")
+    @Field(name = "plan_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
     private String planId;
 
-    @Field("comercio_id")
+    @Field(name = "comercio_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
     private String comercioId;
 
     @Field("orden")

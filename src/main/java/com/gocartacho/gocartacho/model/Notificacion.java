@@ -30,7 +30,7 @@ public class Notificacion {
     private boolean leida = false;
 
     // Relación con el usuario — guardamos solo el ID para evitar queries extras (N+1)
-    @Field("usuario_id")
+    @Field(name = "usuario_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
     @Indexed
     private String usuarioId;
 }

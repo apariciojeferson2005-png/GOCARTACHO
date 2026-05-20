@@ -26,10 +26,10 @@ public class ReporteResena implements Serializable {
     private String id;
 
     @Indexed
-    @Field("resena_id")
+    @Field(name = "resena_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
     private String resenaId;
 
-    @Field("usuario_id")
+    @Field(name = "usuario_id", targetType = org.springframework.data.mongodb.core.mapping.FieldType.OBJECT_ID)
     private String usuarioId; // El usuario que reporta la reseña
 
     @Field("motivo")
